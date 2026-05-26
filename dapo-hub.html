@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DAPO-HUB | UPT SPF SMP Negeri 3 Makassar</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <!-- Google Fonts: Space Grotesk & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Plus Jakarta Sans', 'sans-serif'],
+              mono: ['Space Grotesk', 'monospace'],
+            },
+            colors: {
+              primary: {
+                50: '#f0f9ff',
+                100: '#e0f2fe',
+                500: '#0284c7',
+                600: '#0369a1',
+                700: '#075985',
+                800: '#0c4a6e',
+              },
+              accent: {
+                emerald: '#10b981',
+                orange: '#f97316',
+                violet: '#8b5cf6'
+              }
+            },
+            animation: {
+              'spin-slow': 'spin 20s linear infinite',
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+      .font-mono-title {
+        font-family: 'Space Grotesk', sans-serif;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .dark ::-webkit-scrollbar-track {
+        background: #0f172a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 8px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300 relative overflow-x-hidden">
+    
+    <!-- Background Elements (Stretched for widescreen) -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[95%] xl:max-w-[1440px] h-[600px] pointer-events-none overflow-hidden z-0 opacity-40 dark:opacity-20">
+      <div class="absolute top-[-20%] left-[10%] w-[500px] h-[500px] rounded-full bg-primary-100 dark:bg-primary-900/30 blur-[140px] animate-pulse-slow"></div>
+      <div class="absolute top-[-10%] right-[10%] w-[450px] h-[450px] rounded-full bg-emerald-100 dark:bg-emerald-900/20 blur-[120px] animate-pulse-slow" style="animation-delay: 1.5s;"></div>
+    </div>
+
+    <!-- Top Action Bar (Theme and Share - Fluid Widescreen Container) -->
+    <nav class="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2 flex justify-between items-center relative z-10">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-emerald flex items-center justify-center text-white shadow-md shadow-primary-500/20">
+          <i class="fa-solid fa-database text-lg"></i>
+        </div>
+        <div>
+          <span class="font-mono-title font-bold text-lg tracking-tight bg-gradient-to-r from-primary-600 to-accent-emerald bg-clip-text text-transparent dark:from-primary-400 dark:to-accent-emerald">DAPO-HUB SMP</span>
+          <span class="text-[10px] block font-medium tracking-widest uppercase text-slate-400 dark:text-slate-500">SMP Negeri 3 Makassar</span>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <!-- Dark Mode Toggle -->
+        <button
+          onclick="toggleTheme()"
+          id="theme-toggle"
+          class="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-105 transition-all duration-200 shadow-sm"
+          title="Ubah Tema"
+        >
+          <i id="theme-toggle-icon" class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- Share Button -->
+        <button
+          onclick="shareProfile()"
+          class="px-4 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:scale-105 transition-all duration-200 shadow-sm"
+        >
+          <i class="fa-solid fa-share-nodes text-primary-500"></i>
+          <span class="hidden sm:inline">Bagikan Portal</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Container (Laptop Optimized Widescreen Grid) -->
+    <main class="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      
+      <!-- Profile Header Card (Wider and adapted spacing) -->
+      <header class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xl shadow-slate-100 dark:shadow-none mb-8 transition-colors duration-300">
+        <div class="flex flex-col lg:flex-row items-center lg:items-start gap-6 lg:gap-10">
+          <!-- Profile Picture & Badges -->
+          <div class="relative shrink-0">
+            <div class="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 rounded-3xl bg-gradient-to-tr from-primary-500 via-sky-400 to-accent-emerald p-1 shadow-lg shadow-primary-500/10">
+              <div class="w-full h-full bg-slate-100 dark:bg-slate-850 rounded-[22px] flex items-center justify-center overflow-hidden relative group">
+                <!-- SVG Avatar with professional look -->
+                <svg class="w-20 h-20 lg:w-24 lg:h-24 text-slate-400 dark:text-slate-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                <!-- Avatar Decorative Inner Circle -->
+                <div class="absolute inset-0 bg-primary-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <i class="fa-solid fa-camera text-white text-lg"></i>
+                </div>
+              </div>
+            </div>
+            <!-- Online status badge -->
+            <span class="absolute bottom-1 right-1 flex h-5 w-5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 border-4 border-white dark:border-slate-900"></span>
+            </span>
+          </div>
+
+          <!-- Profile Info Details -->
+          <div class="flex-1 text-center lg:text-left w-full">
+            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-2">
+              <span class="bg-primary-100 dark:bg-primary-950/60 text-primary-700 dark:text-primary-300 text-xs font-bold px-3 py-1 rounded-full border border-primary-200/30">
+                <i class="fa-solid fa-id-card mr-1"></i> Operator Dapodik SMP
+              </span>
+              <span class="bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200/30">
+                <i class="fa-solid fa-network-wired mr-1"></i> IT Support
+              </span>
+            </div>
+            
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center justify-center lg:justify-start gap-2">
+              Rahmat Rahim
+              <i class="fa-solid fa-circle-check text-primary-500 text-xl lg:text-2xl" title="Terverifikasi"></i>
+            </h1>
+            
+            <p class="text-sm sm:text-base font-semibold text-slate-600 dark:text-slate-300 mt-1 flex items-center justify-center lg:justify-start gap-1">
+              <i class="fa-solid fa-school text-primary-500"></i> UPT SPF SMP Negeri 3 Makassar
+            </p>
+            <p class="text-xs sm:text-sm text-slate-400 dark:text-slate-500 mt-2 max-w-3xl mx-auto lg:mx-0">
+              Mengelola Sinkronisasi Data Pokok Pendidikan, Administrasi Siswa, Mutasi Keluar/Masuk, Profil Pendidik, Validasi Sarpras, serta Evaluasi Rapor Pendidikan Jenjang SMP.
+            </p>
+
+            <!-- Relocated & Compact School Metadata Row (Berdekatan dan kompak) -->
+            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-col md:flex-row gap-4 md:gap-8 justify-start text-left">
+              <!-- Alamat Sekolah -->
+              <div class="flex items-start gap-2.5 text-xs text-slate-500 dark:text-slate-400 max-w-md">
+                <i class="fa-solid fa-map-location-dot text-primary-500 mt-0.5 shrink-0 text-sm"></i>
+                <span class="leading-relaxed">Jl. Baji Gau No.11, Baji Mappakasunggu, Kec. Mamajang, Kota Makassar, Sulawesi Selatan 90134</span>
+              </div>
+              
+              <!-- Garis Pembatas Vertikal Halus (Hanya muncul di Layar Besar) -->
+              <div class="hidden md:block w-[1px] bg-slate-200 dark:bg-slate-800 self-stretch"></div>
+
+              <!-- Data Identitas Sekolah (NPSN & Email bertumpuk rapat) -->
+              <div class="flex flex-col gap-2 justify-center text-xs text-slate-500 dark:text-slate-400">
+                <div class="flex items-center gap-2.5">
+                  <i class="fa-solid fa-fingerprint text-primary-500 shrink-0 text-sm"></i>
+                  <span>NPSN: <strong class="font-mono text-slate-700 dark:text-slate-300 text-sm">40312436</strong></span>
+                </div>
+                <div class="flex items-center gap-2.5">
+                  <i class="fa-solid fa-envelope text-primary-500 shrink-0 text-sm"></i>
+                  <span class="underline decoration-dotted decoration-primary-500/50">smpn03mksr@gmail.com</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Social/Contact Quick Link Action Buttons -->
+            <div class="flex items-center justify-center lg:justify-start gap-2.5 mt-6">
+              <a href="https://wa.me/6285157419494" target="_blank" class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-900/30 flex items-center justify-center hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 transition-all duration-200" title="Hubungi via WhatsApp">
+                <i class="fa-brands fa-whatsapp text-xl"></i>
+              </a>
+              <a href="mailto:smpn03mksr@gmail.com" class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 border border-red-200/50 dark:border-red-900/30 flex items-center justify-center hover:bg-red-500 hover:text-white dark:hover:bg-red-600 transition-all duration-200" title="Kirim Email Resmi">
+                <i class="fa-regular fa-envelope text-lg"></i>
+              </a>
+              <a href="https://www.instagram.com/spentig_makassar/?hl=en" target="_blank" class="w-10 h-10 rounded-xl bg-pink-50 dark:bg-pink-950/30 text-pink-600 dark:text-pink-400 border border-pink-200/50 dark:border-pink-900/30 flex items-center justify-center hover:bg-pink-500 hover:text-white dark:hover:bg-pink-600 transition-all duration-200" title="Instagram">
+                <i class="fa-brands fa-instagram text-xl"></i>
+              </a>
+              <a href="https://maps.app.goo.gl/RZWEiTs3595uV48C6" target="_blank" class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border border-amber-200/50 dark:border-amber-900/30 flex items-center justify-center hover:bg-amber-500 hover:text-white dark:hover:bg-amber-600 transition-all duration-200" title="Lokasi Sekolah">
+                <i class="fa-solid fa-map-location-dot text-lg"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Live Metrics (Sejajar dalam 5 kolom rapi di laptop) -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/80">
+          <div class="text-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+            <span class="block text-[11px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase">Siswa Aktif</span>
+            <span class="text-2xl font-bold font-mono-title text-primary-500 mt-1 block">1,414</span>
+          </div>
+          <div class="text-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+            <span class="block text-[11px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase">GTK Terdaftar</span>
+            <span class="text-2xl font-bold font-mono-title text-accent-emerald mt-1 block">59</span>
+          </div>
+          <div class="text-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+            <span class="block text-[11px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase">PTK Terdaftar</span>
+            <span class="text-2xl font-bold font-mono-title text-accent-violet mt-1 block">27</span>
+          </div>
+          <div class="text-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+            <span class="block text-[11px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase">Rombel Aktif </span>
+            <span class="text-2xl font-bold font-mono-title text-accent-emerald mt-1 block">33</span>
+          </div>      
+          <div class="text-center p-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800 col-span-2 md:col-span-1">
+            <span class="block text-[11px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase">Status Sinkron</span>
+            <span class="text-base font-bold text-emerald-500 flex items-center justify-center gap-1.5 mt-2">
+              <i class="fa-solid fa-cloud-arrow-up animate-bounce"></i> Aktif
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Horizontal Full-Width Agenda Widget (Memanjang dengan Progress Tracker Dinamis) -->
+      <section class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 shadow-lg shadow-slate-100/50 dark:shadow-none mb-8 transition-colors duration-300">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-100 dark:border-slate-800/80">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-950/50 text-primary-600 dark:text-primary-400 flex items-center justify-center">
+              <i class="fa-solid fa-list-check text-sm"></i>
+            </div>
+            <div>
+              <h3 class="font-mono-title font-bold text-sm tracking-wider text-slate-900 dark:text-slate-100 uppercase">Agenda Kerja Operator Dapodik</h3>
+              <p class="text-[11px] text-slate-400 dark:text-slate-500">Tugas yang Anda input akan otomatis tersimpan aman di browser.</p>
+            </div>
+          </div>
+          
+          <!-- Quick input (Sized optimally on laptop layouts) -->
+          <form onsubmit="addAgendaItem(event)" class="w-full md:w-96">
+            <div class="relative">
+              <input 
+                type="text" 
+                id="agenda-input" 
+                placeholder="Tulis tugas Dapodik atau agenda baru..." 
+                class="w-full text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-3 px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-white"
+                required
+              />
+              <button type="submit" class="absolute right-1.5 top-1.5 w-8 h-8 bg-primary-500 text-white rounded-lg flex items-center justify-center hover:bg-primary-600 transition-all" title="Tambah Tugas">
+                <i class="fa-solid fa-plus text-xs"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Interactive Progress Bar (Pembaruan Premium) -->
+        <div class="mb-5 bg-slate-50 dark:bg-slate-950 rounded-full p-1.5 border border-slate-100 dark:border-slate-900 flex items-center gap-4">
+          <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
+            <div id="agenda-progress" class="bg-gradient-to-r from-primary-500 to-accent-emerald h-2.5 rounded-full transition-all duration-500 w-0"></div>
+          </div>
+          <span id="agenda-ratio" class="text-[11px] font-bold text-slate-500 dark:text-slate-400 shrink-0 font-mono">0 / 0 Selesai (0%)</span>
+        </div>
+
+        <!-- List Container (Full Width Row Layout for Agenda Items) -->
+        <ul id="agenda-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-1">
+          <!-- JS will inject items here dynamically -->
+        </ul>
+      </section>
+
+     <!-- Links Portal Grid Area (Both sections organized in beautiful rows) -->
+      <div class="space-y-10">
+        
+        <!-- Category 1: Portal Utama Dapodik, PTK & GTK Jenjang SMP -->
+        <div>
+          <div class="flex items-center gap-2.5 mb-5">
+            <div class="w-9 h-9 rounded-xl bg-primary-100 dark:bg-primary-950/50 text-primary-600 dark:text-primary-400 flex items-center justify-center">
+              <i class="fa-solid fa-database text-base"></i>
+            </div>
+            <h2 class="font-mono-title font-bold text-lg tracking-wide text-slate-900 dark:text-slate-100 uppercase">Dapodik & Administrasi</h2>
+          </div>
+
+          <!-- Wider grid layout on widescreen laptops (md:2, lg:3, xl:4 cols) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <!-- Link Card: SP Datadik -->
+            <a href="https://sp.datadik.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-950/40 group-hover:bg-sky-500 group-hover:text-white text-sky-600 dark:text-sky-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-server text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">SP Datadik</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Manajemen Sekolah & Konfirmasi</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-sky-500 dark:group-hover:text-sky-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Verval PD -->
+            <a href="https://vervalpd.data.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/40 group-hover:bg-emerald-500 group-hover:text-white text-amber-600 dark:text-amber-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-graduation-cap text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Verval PD</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Validitas NISN & NIK Siswa</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-amber-500 dark:group-hover:text-amber-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Verval Ijazah - SIVIL -->
+            <a href="https://ijazah.data.kemendikdasmen.go.id/manajemen/#/sign-in" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 group-hover:bg-indigo-500 group-hover:text-white text-indigo-600 dark:text-indigo-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-file-signature text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Portal Ijazah</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Verifikasi Ijazah Elektronik</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Sipintar PIP -->
+            <a href="https://pip.kemendikdasmen.go.id/home_v1" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-fuchsia-50 dark:bg-fuchsia-950/40 group-hover:bg-fuchsia-500 group-hover:text-white text-fuchsia-600 dark:text-fuchsia-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-hand-holding-heart text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Sipintar PIP</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Penyaluran Bantuan PIP Sekolah</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-fuchsia-500 dark:group-hover:text-fuchsia-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Verval PTK -->
+            <a href="https://vervalptk.data.kemendikdasmen.go.id/site/login" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 group-hover:bg-emerald-500 group-hover:text-white text-emerald-600 dark:text-emerald-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-id-badge text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Verval PTK</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Penerbitan & Perbaikan NUPTK</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Info GTK -->
+            <a href="https://info.gtk.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-lime-50 dark:bg-lime-950/40 group-hover:bg-lime-500 group-hover:text-white text-lime-600 dark:text-lime-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-user-check text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Info GTK</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Sertifikasi & Jam Mengajar</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-lime-500 dark:group-hover:text-lime-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Portal TKA (MOVED HERE) -->
+            <a href="https://tka.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-950/40 group-hover:bg-teal-500 group-hover:text-white text-teal-600 dark:text-teal-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-desktop text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Portal TKA</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Tes Kemampuan Akademik</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-teal-500 dark:group-hover:text-teal-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Platform Merdeka Mengajar / PMM -->
+            <a href="https://ptk.datadik.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-950/40 group-hover:bg-violet-500 group-hover:text-white text-violet-600 dark:text-violet-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-chalkboard-user text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Profil PTK</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Portal Data Guru & Tendik</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-violet-500 dark:group-hover:text-violet-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Verval SP -->
+            <a href="https://vervalsp.data.kemendikdasmen.go.id/verval/index.php/cberanda/index/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-violet-50 dark:bg-violet-950/40 group-hover:bg-violet-500 group-hover:text-white text-violet-600 dark:text-violet-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-landmark text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Verval SP</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Profil Sanitasi & Lahan</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-violet-500 dark:group-hover:text-violet-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Akun Belajar.id Admin -->
+            <a href="https://admin.belajar.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/40 group-hover:bg-blue-500 group-hover:text-white text-blue-600 dark:text-blue-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-user-gear text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Admin Belajar.id</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Manajemen Akun Guru & Siswa</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-blue-500 dark:group-hover:text-blue-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: SSO Dapodik -->
+            <a href="http://localhost:5774/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-950/40 group-hover:bg-red-500 group-hover:text-white text-red-600 dark:text-red-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-key text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Dapodik</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Akses Aplikasi Dapodik</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-red-500 dark:group-hover:text-red-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Cek NISN Publik -->
+            <a href="https://nisn.data.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-yellow-50 dark:bg-yellow-950/40 group-hover:bg-yellow-500 group-hover:text-white text-yellow-600 dark:text-yellow-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-magnifying-glass text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Cek NISN</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Pencarian NISN</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-yellow-500 dark:group-hover:text-yellow-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+			
+            <!-- Link Card: ASN Digital (MyASN BKN) -->
+            <a href="https://myasn.bkn.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-950/40 group-hover:bg-sky-500 group-hover:text-white text-sky-600 dark:text-sky-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-user-shield text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">ASN Digital (MyASN)</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Manajemen Data ASN</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-sky-500 dark:group-hover:text-sky-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Portal Dapodik -->
+            <a href="https://dapo.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-950/40 group-hover:bg-sky-500 group-hover:text-white text-sky-600 dark:text-sky-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-globe text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Portal Dapodik</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Unduh Installer, Patch, & Info Pusat</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-sky-500 dark:group-hover:text-sky-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Status Keaktifan NUPTK -->
+            <a href="https://gtk.data.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/40 group-hover:bg-emerald-500 group-hover:text-white text-emerald-600 dark:text-emerald-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-id-card-clip text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Keaktifan NUPTK</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Pencarian & Status Guru</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Pendaftaran Lomba Siswa -->
+            <a href="https://daftar-bpti.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/40 group-hover:bg-amber-500 group-hover:text-white text-amber-600 dark:text-amber-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-trophy text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Pendaftaran Lomba</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Registrasi OSN,FLS3N & O2SN (BPTI)</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-amber-500 dark:group-hover:text-amber-400 group-hover:translate-x-1 transition-all"></i>
+            </a>			
+          </div>
+        </div>
+
+        <!-- Category 2: Manajemen, Anggaran, Rapor, & PPDB SMP -->
+        <div>
+          <div class="flex items-center gap-2.5 mb-5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+              <i class="fa-solid fa-briefcase text-base"></i>
+            </div>
+            <h2 class="font-mono-title font-bold text-lg tracking-wide text-slate-900 dark:text-slate-100 uppercase">Manajemen & Rapor</h2>
+          </div>
+
+          <!-- Wider grid layout on widescreen laptops (md:2, lg:3, xl:4 cols) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <!-- Link Card: Website Resmi SMPN 3 Makassar -->
+            <a href="https://smpn3makassar.sch.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/40 group-hover:bg-emerald-500 group-hover:text-white text-emerald-600 dark:text-emerald-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-school-flag text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Website SMPN 3 Mks</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Portal Berita Informasi Sekolah</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: E-Rapor SMP -->
+            <a href="https://rapor.smpn3mks.sch.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 group-hover:bg-emerald-500 group-hover:text-white text-emerald-600 dark:text-emerald-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-file-invoice text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">E-Rapor</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Sistem Penilaian Hasil Belajar</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Rapor Pendidikan -->
+            <a href="https://raporpendidikan.kemendikdasmen.go.id/login" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-pink-100 dark:bg-pink-950/40 group-hover:bg-pink-500 group-hover:text-white text-pink-600 dark:text-pink-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-chart-line text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Rapor Pendidikan</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Evaluasi Hasil Mutu Asesmen</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-pink-500 dark:group-hover:text-pink-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Rumah Pendidikan (MOVED HERE) -->
+            <a href="https://rumah.pendidikan.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 group-hover:bg-emerald-500 group-hover:text-white text-emerald-600 dark:text-emerald-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-house-laptop text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Rumah Pendidikan</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Sumber Belajar Digital</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: ARKAS -->
+            <a href="https://arkas.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-teal-50 dark:bg-teal-950/40 group-hover:bg-teal-500 group-hover:text-white text-teal-600 dark:text-teal-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-calculator text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">ARKAS</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Rencana Kerja & Anggaran</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-teal-500 dark:group-hover:text-teal-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: BOS Salur -->
+            <a href="https://bosp.kemendikdasmen.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 group-hover:bg-indigo-500 group-hover:text-white text-indigo-600 dark:text-indigo-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-hand-holding-dollar text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">BOSP Salur</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Rekening Penyaluran BOS</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: SIPLah -->
+            <a href="https://siplah.blibli.com/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950/40 group-hover:bg-purple-500 group-hover:text-white text-purple-600 dark:text-purple-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-cart-shopping text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">SIPLah</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Sistem Pengadaan Belanja</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-purple-500 dark:group-hover:text-purple-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: PPDB Online SMP Makassar -->
+            <a href="https://spmb.makassarkota.go.id" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-orange-50 dark:bg-orange-950/40 group-hover:bg-orange-500 group-hover:text-white text-orange-600 dark:text-orange-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-user-plus text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">SPMB SMP Kota Makassar</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Portal Sistem Penerimaan Murid Baru</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-orange-500 dark:group-hover:text-orange-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+
+            <!-- Link Card: Dinas Pendidikan Makassar -->
+            <a href="https://disdik.makassarkota.go.id/" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 group-hover:bg-cyan-500 group-hover:text-white text-cyan-600 dark:text-cyan-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-building-user text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">Disdik Makassar</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Dinas Pendidikan Kota Makassar</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 group-hover:translate-x-1 transition-all"></i>
+            </a>
+			
+            <!-- Link Card: LAMARITA -->
+            <a href="https://lamarita.smpn3mks.sch.id" target="_blank" class="group bg-white dark:bg-slate-900 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] transition-all duration-200">
+              <div class="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-950/40 group-hover:bg-red-500 group-hover:text-white text-red-600 dark:text-red-400 flex items-center justify-center transition-colors duration-200 shrink-0">
+                <i class="fa-solid fa-key text-xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="block text-sm font-bold text-slate-800 dark:text-slate-100 truncate">LAMARITA</span>
+                <span class="block text-xs text-slate-400 dark:text-slate-500 truncate">Akses Terpadu Administrasi Sekolah</span>
+              </div>
+              <i class="fa-solid fa-arrow-right text-xs text-slate-300 dark:text-slate-700 group-hover:text-red-500 dark:group-hover:text-red-400 group-hover:translate-x-1 transition-all"></i>
+            </a>			
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Custom Toast Notification Box -->
+    <div
+      id="toast"
+      class="fixed bottom-6 right-6 z-50 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 text-sm font-semibold opacity-0 pointer-events-none translate-y-4 transition-all duration-300 border border-slate-800 dark:border-slate-100"
+    >
+      <i class="fa-solid fa-circle-check text-emerald-400 dark:text-emerald-500 text-base"></i>
+      <span id="toast-message">Notifikasi berhasil muncul!</span>
+    </div>
+
+    <!-- Footer Area (Fluid Widescreen Footer) -->
+    <footer class="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center text-xs text-slate-400 dark:text-slate-600 relative z-10 border-t border-slate-200/50 dark:border-slate-900/50 mt-12">
+      <p class="font-mono-title tracking-widest uppercase font-bold text-slate-500 dark:text-slate-400 text-[10px] mb-2">DAPO-HUB @ UPT SPF SMP NEGERI 3 MAKASSAR</p>
+      <p class="mb-4">Eratkan Integrasi, Tingkatkan Kualitas Data Pendidikan Kota Makassar.</p>
+      <div class="flex justify-center items-center gap-2 text-[10px]">
+        <span class="px-2 py-0.5 rounded-md bg-slate-200/50 dark:bg-slate-900 text-slate-600 dark:text-slate-400">Tailwind CSS</span>
+        <span class="px-2 py-0.5 rounded-md bg-slate-200/50 dark:bg-slate-900 text-slate-600 dark:text-slate-400">Pure JS</span>
+        <span class="px-2 py-0.5 rounded-md bg-slate-200/50 dark:bg-slate-900 text-slate-600 dark:text-slate-400">Dapodik SMP 2026</span>
+      </div>
+    </footer>
+
+    <!-- Native Logic & Theme Interactions -->
+    <script {nonce}>
+      // System Theme Logic Initialization
+      (function () {
+        const savedTheme = localStorage.getItem('theme');
+        const icon = document.getElementById('theme-toggle-icon');
+        
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+          if (icon) icon.className = 'fa-solid fa-sun';
+        } else {
+          document.documentElement.classList.remove('dark');
+          if (icon) icon.className = 'fa-solid fa-moon';
+        }
+      })();
+
+      // Toggle Theme Switcher function
+      function toggleTheme() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const icon = document.getElementById('theme-toggle-icon');
+        
+        if (isDark) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+          if (icon) icon.className = 'fa-solid fa-moon';
+          showToast('Ubah ke Tema Terang');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+          if (icon) icon.className = 'fa-solid fa-sun';
+          showToast('Ubah ke Tema Gelap');
+        }
+      }
+
+      // Notification Toast Helper (Avoid Browser Alerts)
+      function showToast(message) {
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toast-message');
+        
+        toastMsg.textContent = message;
+        toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        
+        setTimeout(() => {
+          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+        }, 2500);
+      }
+
+      // Copy Portal Link to Clipboard
+      function shareProfile() {
+        const currentUrl = window.location.href;
+        
+        const dummyInput = document.createElement('input');
+        document.body.appendChild(dummyInput);
+        dummyInput.value = currentUrl;
+        dummyInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummyInput);
+
+        showToast('Tautan portal berhasil disalin ke clipboard!');
+      }
+
+      // Agenda Kerja (To-Do List) Data Model & Functions
+      let agendaData = [
+        { id: 1, text: "Sinkronisasi Dapodik SMP Semester Genap", done: true },
+        { id: 2, text: "Tarik data lulusan SD masuk Kelas VII baru", done: false },
+        { id: 3, text: "Kroscek validasi PIP siswa kelas IX", done: false },
+        { id: 4, text: "Kroscek nama siswa di ijazah SDnya", done: false },
+      ];
+
+      // Load initial agenda from localstorage or use default
+      function loadAgenda() {
+        const saved = localStorage.getItem('operator_agenda_smp');
+        if (saved) {
+          agendaData = JSON.parse(saved);
+        }
+        renderAgenda();
+      }
+
+      // Menyimpan data agenda ke local storage
+      function saveAgenda() {
+        localStorage.setItem('operator_agenda_smp', JSON.stringify(agendaData));
+        updateProgressBar();
+      }
+
+      // Progress bar tracker update (NEW Premium Feature)
+      function updateProgressBar() {
+        const total = agendaData.length;
+        const completed = agendaData.filter(item => item.done).length;
+        const progressEl = document.getElementById('agenda-progress');
+        const ratioEl = document.getElementById('agenda-ratio');
+        
+        if (total === 0) {
+          progressEl.style.width = '0%';
+          ratioEl.textContent = '0 / 0 Selesai (0%)';
+          return;
+        }
+        
+        const percentage = Math.round((completed / total) * 100);
+        progressEl.style.width = `${percentage}%`;
+        ratioEl.textContent = `${completed} / ${total} Selesai (${percentage}%)`;
+      }
+
+      // Render daftar agenda kerja
+      function renderAgenda() {
+        const listEl = document.getElementById('agenda-list');
+        listEl.innerHTML = '';
+        
+        if (agendaData.length === 0) {
+          listEl.innerHTML = `<li class="col-span-full text-center py-8 text-xs text-slate-400 dark:text-slate-500 italic">Belum ada agenda kerja aktif. Silakan tambahkan melalui form di atas.</li>`;
+          updateProgressBar();
+          return;
+        }
+
+        agendaData.forEach(item => {
+          const li = document.createElement('li');
+          li.className = `flex items-center justify-between p-3.5 rounded-xl border text-xs transition-all duration-200 ${
+            item.done 
+              ? 'bg-slate-50/50 dark:bg-slate-900/30 border-slate-100 dark:border-slate-800/50 text-slate-400 dark:text-slate-500 line-through' 
+              : 'bg-white dark:bg-slate-900 border-slate-200/60 dark:border-slate-800/80 text-slate-700 dark:text-slate-300 shadow-sm hover:shadow-md'
+          }`;
+          
+          li.innerHTML = `
+            <div class="flex items-start gap-3 min-w-0 pr-2">
+              <button onclick="toggleAgendaStatus(${item.id})" class="w-4 h-4 rounded border flex items-center justify-center transition-colors mt-0.5 shrink-0 ${
+                item.done ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-700 hover:border-primary-500'
+              }">
+                ${item.done ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+              </button>
+              <span class="break-words whitespace-normal leading-relaxed font-medium">${item.text}</span>
+            </div>
+            <button onclick="deleteAgendaItem(${item.id})" class="text-slate-300 hover:text-red-500 dark:text-slate-700 dark:hover:text-red-400 transition-colors shrink-0 ml-2" title="Hapus Tugas">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          `;
+          listEl.appendChild(li);
+        });
+        updateProgressBar();
+      }
+
+      // Menambahkan item agenda baru
+      function addAgendaItem(e) {
+        e.preventDefault();
+        const input = document.getElementById('agenda-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        const newItem = {
+          id: Date.now(),
+          text: text,
+          done: false
+        };
+
+        agendaData.push(newItem);
+        saveAgenda();
+        renderAgenda();
+        input.value = '';
+        showToast('Agenda baru berhasil ditambahkan!');
+      }
+
+      // Mengubah status agenda (selesai / belum)
+      function toggleAgendaStatus(id) {
+        agendaData = agendaData.map(item => {
+          if (item.id === id) {
+            const textStatus = !item.done;
+            if (textStatus) {
+              showToast('Luar biasa! Agenda telah diselesaikan.');
+            }
+            return { ...item, done: textStatus };
+          }
+          return item;
+        });
+        saveAgenda();
+        renderAgenda();
+      }
+
+      // Menghapus item agenda dari daftar
+      function deleteAgendaItem(id) {
+        agendaData = agendaData.filter(item => item.id !== id);
+        saveAgenda();
+        renderAgenda();
+        showToast('Agenda berhasil dihapus!');
+      }
+
+      // Inisialisasi awal saat window dimuat
+      window.onload = function() {
+        loadAgenda();
+      };
+    </script>
+  </body>
+</html>
