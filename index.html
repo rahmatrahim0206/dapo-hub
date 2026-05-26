@@ -649,20 +649,6 @@
 
     <!-- Native Logic & Theme Interactions -->
     <script {nonce}>
-      // System Theme Logic Initialization
-      (function () {
-        const savedTheme = localStorage.getItem('theme');
-        const icon = document.getElementById('theme-toggle-icon');
-        
-        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.classList.add('dark');
-          if (icon) icon.className = 'fa-solid fa-sun';
-        } else {
-          document.documentElement.classList.remove('dark');
-          if (icon) icon.className = 'fa-solid fa-moon';
-        }
-      })();
-
       // Toggle Theme Switcher function
       function toggleTheme() {
         const isDark = document.documentElement.classList.contains('dark');
