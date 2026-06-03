@@ -422,7 +422,7 @@
                     <i class="fa-solid fa-circle-nodes text-blue-500"></i> PWA Offline Deployment Kit
                   </h5>
                   <p class="text-[9px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Unduh konfigurasi berikut dan taruh bersama <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600">index.html</code> pada server lokal Anda agar portal dapat diakses secara luring.
+                    Unduh konfigurasi berikut and taruh bersama <code class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600">index.html</code> pada server lokal Anda agar portal dapat diakses secara luring.
                   </p>
                   <div class="grid grid-cols-2 gap-2">
                     <button onclick="downloadPwaFile('manifest')" class="py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-bold transition flex items-center justify-center gap-1">
@@ -664,7 +664,7 @@
         SCHOOL_CODE_ABBR: "SPENTIG", 
         NPSN: "40312436",
         OPERATOR_NAME: "Rahmat Rahim",
-        RAPOR_URL: "https://rapor.smpn3mks.sch.id",
+        RAPOR_URL: "https://rapor.smpn3makassar.sch.id",
         CUTOFF_DATE: "August 31, 2026 23:59:59",
         CUTOFF_TITLE: "Cut-Off BOS Reguler 2026",
         CUTOFF_DESC: "Batas akhir penarikan data siswa untuk dana BOS sekolah.",
@@ -758,6 +758,7 @@
         { id: "seed-myasn", title: "MyASN BKN", url: "https://myasn.bkn.go.id", desc: "Portal utama satu pintu layanan kepegawaian mandiri ASN nasional dari Badan Kepegawaian Negara.", category: "kepegawaian", icon: "fa-id-card", system: true },
         { id: "seed-ekinerja", title: "e-Kinerja BKN", url: "https://kinerja.bkn.go.id", desc: "Sistem pengelolaan kinerja pegawai ASN terintegrasi untuk penyusunan and penilaian Sasaran Kinerja Pegawai (SKP).", category: "kepegawaian", icon: "fa-chalkboard-user", system: true },
         { id: "seed-sipp", title: "SIPP Makassar (SIM Kepegawaian)", url: "https://sipp.makassar.go.id", desc: "Sistem Informasi Pelayanan Personil BKPSDMD Kota Makassar untuk pencatatan berkas fisik and administrasi ASN.", category: "kepegawaian", icon: "fa-city", system: true },
+        { id: "seed-esakti", title: "e-Sakti Makassar (Presensi & TPP)", url: "https://esakti.makassar.go.id", desc: "Layanan mandiri presensi ASN daerah Makassar, pemantauan kedisiplinan kerja, dan realisasi TPP harian.", category: "kepegawaian", icon: "fa-network-wired", system: true },
         { id: "seed-simpeg", title: "SIMPEG Kemendikdasmen", url: "https://simpeg.bkpsdmd.makassarkota.go.id/", desc: "Sistem Informasi Manajemen Kepegawaian internal Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi.", category: "kepegawaian", icon: "fa-id-card", system: true },
         { id: "seed-24", title: "Portal Web ANBK", url: "https://anbk.kemendikdasmen.go.id", desc: "Penetapan status pelaksanaan, data proktor, komputer client, penjadwalan, dan cetak kartu login.", category: "ujian", icon: "fa-computer", system: true },
         { id: "seed-25", title: "Bio-AN SMP", url: "https://bioansmp.kemendikdasmen.go.id", desc: "Sistem penarikan data calon peserta Asesmen Nasional (DNT) dari pangkalan Dapodik secara terintegrasi.", category: "ujian", icon: "fa-id-card", system: true },
@@ -1016,6 +1017,59 @@
         }, 1000);
       }
 
+      // Pengurai URL otpauth:// untuk ekstraksi data otomatis
+      function parseOtpAuthUri(uri) {
+        try {
+          if (!uri.startsWith('otpauth://')) return null;
+          const url = new URL(uri);
+          const params = new URLSearchParams(url.search);
+          const secret = params.get('secret');
+          if (!secret) return null;
+
+          let label = decodeURIComponent(url.pathname.replace(/^\//, ''));
+          let issuer = params.get('issuer') || '';
+          let user = '';
+
+          if (label.includes(':')) {
+            const parts = label.split(':');
+            if (!issuer) issuer = parts[0].trim();
+            user = parts.slice(1).join(':').trim();
+          } else {
+            user = label.trim();
+          }
+          
+          if (!issuer) issuer = 'TOTP';
+
+          return { label: issuer, user: user || '-', key: secret };
+        } catch (e) {
+          // Fallback regex parsing jika URL parser standar gagal
+          const secretMatch = uri.match(/[?&]secret=([^&]+)/i);
+          if (secretMatch) {
+            const secret = secretMatch[1];
+            const issuerMatch = uri.match(/[?&]issuer=([^&]+)/i);
+            const issuer = issuerMatch ? decodeURIComponent(issuerMatch[1]) : 'TOTP';
+            return { label: issuer, user: '-', key: secret };
+          }
+          return null;
+        }
+      }
+
+      // Handler untuk memproses dan menggenerasi hasil scan / unggahan QR Code secara instan
+      function handleQrCodeResult(res) {
+        const parsed = parseOtpAuthUri(res);
+        if (parsed) {
+          document.getElementById('auth-main-label').value = parsed.label;
+          document.getElementById('auth-main-user').value = parsed.user;
+          document.getElementById('auth-main-key').value = parsed.key;
+          save2FaKeyFromMain();
+        } else {
+          // Jika hanya berisi string kunci rahasia murni
+          const cleaned = res.replace(/\s+/g, '').toUpperCase();
+          document.getElementById('auth-main-key').value = cleaned;
+          showToast("Kunci rahasia berhasil dimuat. Lengkapi data layanan lalu simpan.", "warning");
+        }
+      }
+
       function toggleQrScanner() {
         if (typeof Html5Qrcode === 'undefined') {
           showToast("Pustaka QR Scanner belum siap dimuat hulu.", "error");
@@ -1038,9 +1092,7 @@
             { fps: 10, qrbox: 200 },
             res => {
               toggleQrScanner();
-              const keyInput = document.getElementById('auth-main-key');
-              if (keyInput) keyInput.value = res;
-              showToast("QR Code berhasil dipindai!");
+              handleQrCodeResult(res);
             },
             () => {}
           ).catch(() => {
@@ -1062,9 +1114,7 @@
         }
         if(e.target.files[0]) {
           new Html5Qrcode("qr-reader").scanFile(e.target.files[0], true).then(res => {
-            const keyInput = document.getElementById('auth-main-key');
-            if (keyInput) keyInput.value = res;
-            showToast("Kode berhasil diekstrak!");
+            handleQrCodeResult(res);
           }).catch(() => {
             showToast("Gagal mendeteksi kode QR dalam gambar.", "error");
           });
@@ -1332,6 +1382,7 @@
         }
       }
 
+      // Navigasi bulan kalender harian
       function prevMonth() { currentDateObj.setMonth(currentDateObj.getMonth()-1); initCalendar(); }
       function nextMonth() { currentDateObj.setMonth(currentDateObj.getMonth()+1); initCalendar(); }
 
