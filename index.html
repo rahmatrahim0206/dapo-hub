@@ -10,9 +10,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DAPO-HUB">
     <meta name="theme-color" content="#2563eb">
-    <link class="apple-touch-icon" rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2210/2210143.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2210/2210143.png">
     
-    <!-- Link Manifest PWA -->
+    <!-- Link Manifest PWA & Favicon -->
     <link rel="manifest" href="./manifest.json" id="pwa-manifest-link">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2210/2210143.png">
     
@@ -75,7 +75,7 @@
   </head>
   <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300 relative">
     
-    <!-- HEADER BAR (Lebar maksimum ditingkatkan ke max-w-[130rem] dengan padding tepi lebih renggang di layar besar) -->
+    <!-- HEADER BAR -->
     <header class="sticky top-0 z-40 w-full backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800">
       <div class="max-w-[130rem] mx-auto px-4 sm:px-8 lg:px-12 h-16 flex items-center justify-between">
         <div class="flex items-center space-x-2 sm:space-x-3">
@@ -201,7 +201,7 @@
                   </div>
                 </header>
 
-                <!-- CONTAINER GRID TOKEN OTP (Dikunci konsisten maksimum 2 kolom pada layar monitor lebar) -->
+                <!-- CONTAINER GRID TOKEN OTP -->
                 <div id="main-authenticator-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <!-- JS Rendered -->
                 </div>
@@ -451,11 +451,11 @@
     <div id="hidden-inputs-wrapper" class="hidden">
       <!-- Input file Data JSON untuk Import -->
       <input type="file" id="import-file-input" accept=".json" onchange="importBackupData(event)"/>
-      <!-- Input file Gambar QR Code (Kamera File Scanner) -->
+      <!-- Input file Gambar QR Code -->
       <input type="file" id="qr-file-input" accept="image/*" onchange="scanQrFile(event)" />
     </div>
 
-    <!-- LOCK SCREEN OVERLAY (15 MENIT IDLE) -->
+    <!-- LOCK SCREEN OVERLAY -->
     <div id="idle-lock-screen" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center pointer-events-none opacity-0 transition-all duration-500">
       <div class="text-center p-8 max-w-sm rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl space-y-6 transform scale-95 transition-transform duration-500" id="lock-card">
         <div class="w-20 h-20 mx-auto rounded-full bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-500 animate-pulse text-3xl">
@@ -471,7 +471,7 @@
       </div>
     </div>
 
-    <!-- MODAL CONFIRMATION CUSTOM (REPLACES WINDOW.CONFIRM) -->
+    <!-- MODAL CONFIRMATION CUSTOM -->
     <div id="custom-confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
       <div class="bg-white dark:bg-slate-800 w-full max-w-sm mx-4 p-6 rounded-3xl border shadow-2xl relative transform scale-95 transition-all duration-300">
         <div class="text-center space-y-4">
@@ -592,50 +592,32 @@
       // 0. ANTI-INSPECT & DEVTOOLS BLOCKER
       // ==========================================
       (function() {
-        // Blokir Klik Kanan
+        // Blokir Klik Kanan (Senyap)
         document.addEventListener('contextmenu', function(e) {
           e.preventDefault();
-          if (typeof showToast === 'function') {
-            showToast("⚠️ Klik kanan dinonaktifkan untuk perlindungan data!", "warning");
-          }
         });
 
-        // Blokir Shortcut Keyboard untuk Inspeksi
+        // Blokir Shortcut Keyboard untuk Inspeksi (Senyap)
         document.addEventListener('keydown', function(e) {
-          // F12 (123)
-          if (e.keyCode === 123 || e.key === 'F12') {
+          const forbiddenKeys = [
+            123, // F12
+            73,  // I
+            74,  // J
+            67,  // C
+            85,  // U
+            83   // S
+          ];
+          
+          const isCommand = e.ctrlKey || e.metaKey;
+          const isShift = e.shiftKey;
+
+          if (
+            forbiddenKeys.includes(e.keyCode) || 
+            (isCommand && isShift && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || // Ctrl+Shift+I/J/C
+            (isCommand && e.keyCode === 85) || // Ctrl+U (View Source)
+            (isCommand && e.keyCode === 83)    // Ctrl+S (Save)
+          ) {
             e.preventDefault();
-            if (typeof showToast === 'function') showToast("⚠️ Akses DevTools dilarang!", "error");
-            return false;
-          }
-          // Ctrl+Shift+I / Cmd+Opt+I (Inspect)
-          if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.keyCode === 73 || e.key === 'I' || e.key === 'i')) {
-            e.preventDefault();
-            if (typeof showToast === 'function') showToast("⚠️ Inspeksi kode dilarang!", "error");
-            return false;
-          }
-          // Ctrl+Shift+J / Cmd+Opt+J (Console)
-          if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.keyCode === 74 || e.key === 'J' || e.key === 'j')) {
-            e.preventDefault();
-            if (typeof showToast === 'function') showToast("⚠️ Akses konsol dinonaktifkan!", "error");
-            return false;
-          }
-          // Ctrl+Shift+C / Cmd+Opt+C (Element Selector)
-          if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.keyCode === 67 || e.key === 'C' || e.key === 'c')) {
-            e.preventDefault();
-            if (typeof showToast === 'function') showToast("⚠️ Inspeksi elemen dilarang!", "error");
-            return false;
-          }
-          // Ctrl+U (View Source)
-          if ((e.ctrlKey || e.metaKey) && (e.keyCode === 85 || e.key === 'U' || e.key === 'u')) {
-            e.preventDefault();
-            if (typeof showToast === 'function') showToast("⚠️ Dilarang melihat kode sumber halaman!", "error");
-            return false;
-          }
-          // Ctrl+S (Save Page)
-          if ((e.ctrlKey || e.metaKey) && (e.keyCode === 83 || e.key === 'S' || e.key === 's')) {
-            e.preventDefault();
-            if (typeof showToast === 'function') showToast("⚠️ Penyimpanan lokal halaman dinonaktifkan!", "warning");
             return false;
           }
         });
@@ -646,7 +628,7 @@
             const start = new Date();
             debugger; // Akan menahan eksekusi jika konsol DevTools terbuka
             const end = new Date();
-            if (end - start > 100) {
+            if (end - start > 150) { // Toleransi waktu disesuaikan untuk kestabilan perangkat
               // Jika terdeteksi jeda lama (DevTools terbuka), kunci/reset tampilan
               document.body.innerHTML = `
                 <div class="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-white font-space text-center p-6 space-y-4">
@@ -663,33 +645,32 @@
             }
           })();
         }, 1000);
+
+        // Deteksi Perubahan Ukuran Window (Docking DevTools)
+        window.addEventListener('resize', () => {
+          if ((window.outerHeight - window.innerHeight) > 200 || (window.outerWidth - window.innerWidth) > 200) {
+             console.clear();
+             console.log("%cBerhenti! Area ini hanya untuk pengembang terverifikasi.", "color: red; font-size: 24px; font-weight: bold;");
+          }
+        });
       })();
 
       // ==========================================
-      // 1. GLOBAL CONFIGURATION (Edit di satu tempat ini)
+      // 1. GLOBAL CONFIGURATION
       // ==========================================
       const CONFIG = {
-        // Identitas Instansi Sekolah & Operator
         SCHOOL_NAME_LONG: "UPT SPF SMP Negeri 3 Makassar",
         SCHOOL_NAME_SHORT: "SMP Negeri 3 Makassar",
         SCHOOL_CODE_ABBR: "SPENTIG", 
         NPSN: "40312436",
         OPERATOR_NAME: "Rahmat Rahim",
-
-        // Integrasi URL E-Rapor
-        RAPOR_URL: "https://rapor.smpn3makassar.sch.id",
-
-        // Target Cut-Off & Alarm Penarikan BOS
-        CUTOFF_DATE: "Aug 31, 2026 23:59:59",
+        RAPOR_URL: "https://rapor.smpn3mks.sch.id",
+        CUTOFF_DATE: "August 31, 2026 23:59:59",
         CUTOFF_TITLE: "Cut-Off BOS Reguler 2026",
         CUTOFF_DESC: "Batas akhir penarikan data siswa untuk dana BOS sekolah.",
         CUTOFF_FOOTER_TEXT: "Target: 31 Agustus 2026",
-
-        // Enkripsi & Storage Adapters
         SECURE_PASS_KEY: "dapohub-secure-universal-key-2026",
-        STORAGE_PREFIX: "dapohub-", // Semua key LocalStorage memakai prefix universal ini
-
-        // Batas Penguncian Otomatis (Idle Lock)
+        STORAGE_PREFIX: "dapohub-",
         IDLE_LIMIT_MINUTES: 15
       };
 
@@ -777,7 +758,6 @@
         { id: "seed-myasn", title: "MyASN BKN", url: "https://myasn.bkn.go.id", desc: "Portal utama satu pintu layanan kepegawaian mandiri ASN nasional dari Badan Kepegawaian Negara.", category: "kepegawaian", icon: "fa-id-card", system: true },
         { id: "seed-ekinerja", title: "e-Kinerja BKN", url: "https://kinerja.bkn.go.id", desc: "Sistem pengelolaan kinerja pegawai ASN terintegrasi untuk penyusunan and penilaian Sasaran Kinerja Pegawai (SKP).", category: "kepegawaian", icon: "fa-chalkboard-user", system: true },
         { id: "seed-sipp", title: "SIPP Makassar (SIM Kepegawaian)", url: "https://sipp.makassar.go.id", desc: "Sistem Informasi Pelayanan Personil BKPSDMD Kota Makassar untuk pencatatan berkas fisik and administrasi ASN.", category: "kepegawaian", icon: "fa-city", system: true },
-        { id: "seed-esakti", title: "e-Sakti Makassar (Presensi & TPP)", url: "https://esakti.makassar.go.id", desc: "Layanan mandiri presensi ASN daerah Makassar, pemantauan kedisiplinan kerja, dan realisasi TPP harian.", category: "kepegawaian", icon: "fa-network-wired", system: true },
         { id: "seed-simpeg", title: "SIMPEG Kemendikdasmen", url: "https://simpeg.bkpsdmd.makassarkota.go.id/", desc: "Sistem Informasi Manajemen Kepegawaian internal Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi.", category: "kepegawaian", icon: "fa-id-card", system: true },
         { id: "seed-24", title: "Portal Web ANBK", url: "https://anbk.kemendikdasmen.go.id", desc: "Penetapan status pelaksanaan, data proktor, komputer client, penjadwalan, dan cetak kartu login.", category: "ujian", icon: "fa-computer", system: true },
         { id: "seed-25", title: "Bio-AN SMP", url: "https://bioansmp.kemendikdasmen.go.id", desc: "Sistem penarikan data calon peserta Asesmen Nasional (DNT) dari pangkalan Dapodik secara terintegrasi.", category: "ujian", icon: "fa-id-card", system: true },
@@ -795,7 +775,7 @@
       ];
 
       // ==========================================================
-      // 4. DEKLARASI SECURE STORAGE & UTILS (Wajib Di Sini!)
+      // 4. DEKLARASI SECURE STORAGE & UTILS
       // ==========================================================
       function secureSave(key, rawData) {
         try {
@@ -849,6 +829,7 @@
 
       function showCustomConfirm(title, message, callback, iconClass = 'fa-circle-question') {
         const modal = document.getElementById('custom-confirm-modal');
+        if (!modal) return;
         document.getElementById('confirm-modal-title').textContent = title;
         document.getElementById('confirm-modal-message').textContent = message;
         document.getElementById('confirm-modal-icon').className = `fa-solid ${iconClass}`;
@@ -857,17 +838,14 @@
         modal.children[0].classList.replace('scale-95', 'scale-100');
       }
 
-      // Tutup Custom Confirm Modal
       function closeCustomConfirm(approved = false) {
         const modal = document.getElementById('custom-confirm-modal');
+        if (!modal) return;
         modal.classList.add('opacity-0', 'pointer-events-none');
         modal.children[0].classList.replace('scale-100', 'scale-95');
         if (approved && typeof activeConfirmCallback === 'function') activeConfirmCallback();
         activeConfirmCallback = null;
       }
-
-      document.getElementById('btn-confirm-cancel').addEventListener('click', () => closeCustomConfirm(false));
-      document.getElementById('btn-confirm-ok').addEventListener('click', () => closeCustomConfirm(true));
 
       function copyText(textToCopy, successMessage) {
         const dummy = document.createElement('textarea');
@@ -899,7 +877,6 @@
         dateDisplay.textContent = `${days[witaDate.getDay()]}, ${witaDate.getDate()} ${months[witaDate.getMonth()]} ${witaDate.getFullYear()}`;
       }
 
-      // Status Koneksi Luring / Daring
       function updateOnlineStatus(isOnline) {
         const bdg = document.getElementById('status-badge');
         const icn = document.getElementById('status-badge-icon');
@@ -924,16 +901,17 @@
       window.addEventListener('offline', () => { showToast('⚠️ Mode Offline Aktif.', 'warning'); updateOnlineStatus(false); });
       window.addEventListener('online', () => { showToast('⚡ Portal terhubung daring.', 'success'); updateOnlineStatus(true); });
 
-      // Sistem Idle Sesi otomatis
       function resetIdleTimer() { if (!sessionLocked) idleTimeCounter = 0; }
 
       function lockUserSession() {
         sessionLocked = true;
         const screen = document.getElementById('idle-lock-screen');
         const card = document.getElementById('lock-card');
-        screen.classList.replace('pointer-events-none', 'pointer-events-auto');
-        screen.classList.replace('opacity-0', 'opacity-100');
-        card.classList.replace('scale-95', 'scale-100');
+        if (screen && card) {
+          screen.classList.replace('pointer-events-none', 'pointer-events-auto');
+          screen.classList.replace('opacity-0', 'opacity-100');
+          card.classList.replace('scale-95', 'scale-100');
+        }
       }
 
       function unlockSession() {
@@ -941,14 +919,16 @@
         idleTimeCounter = 0;
         const screen = document.getElementById('idle-lock-screen');
         const card = document.getElementById('lock-card');
-        screen.classList.replace('pointer-events-auto', 'pointer-events-none');
-        screen.classList.replace('opacity-100', 'opacity-0');
-        card.classList.replace('scale-100', 'scale-95');
-        showToast("Sesi dipulihkan!", "success");
+        if (screen && card) {
+          screen.classList.replace('pointer-events-auto', 'pointer-events-none');
+          screen.classList.replace('opacity-100', 'opacity-0');
+          card.classList.replace('scale-100', 'scale-95');
+          showToast("Sesi dipulihkan!", "success");
+        }
       }
 
       // ==========================================
-      // 5. MODUL MULTI-FACTOR AUTHENTICATOR (TOTP RFC 6238)
+      // 5. MULTI-FACTOR AUTHENTICATOR LOGIC
       // ==========================================
       function base32toWordArray(b32) {
         const c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"; let b = "";
@@ -966,7 +946,6 @@
         } catch (e) { return "000000"; }
       }
 
-      // Render daftar token 2FA (Dikunci persis 2 kolom saja demi estetika layar lebar)
       function renderAuthenticatorKeys() {
         const c = document.getElementById('main-authenticator-list'); if (!c) return;
         c.innerHTML = ''; const q = document.getElementById('search-input').value.toLowerCase().trim();
@@ -1038,16 +1017,20 @@
       }
 
       function toggleQrScanner() {
+        if (typeof Html5Qrcode === 'undefined') {
+          showToast("Pustaka QR Scanner belum siap dimuat hulu.", "error");
+          return;
+        }
         const wrp = document.getElementById('qr-reader-wrapper');
         const bText = document.getElementById('text-btn-scan');
         if (isScanning) {
-          wrp.classList.add('hidden');
-          bText.textContent = "Scan Kamera";
+          if (wrp) wrp.classList.add('hidden');
+          if (bText) bText.textContent = "Scan Kamera";
           isScanning = false;
           if (qrScannerObj) qrScannerObj.stop();
         } else {
-          wrp.classList.remove('hidden');
-          bText.textContent = "Hentikan";
+          if (wrp) wrp.classList.remove('hidden');
+          if (bText) bText.textContent = "Hentikan";
           isScanning = true;
           qrScannerObj = new Html5Qrcode("qr-reader");
           qrScannerObj.start(
@@ -1055,19 +1038,32 @@
             { fps: 10, qrbox: 200 },
             res => {
               toggleQrScanner();
-              document.getElementById('auth-main-key').value = res;
+              const keyInput = document.getElementById('auth-main-key');
+              if (keyInput) keyInput.value = res;
               showToast("QR Code berhasil dipindai!");
             },
             () => {}
-          );
+          ).catch(() => {
+            toggleQrScanner();
+            showToast("Gagal mengakses kamera instrumen.", "error");
+          });
         }
       }
 
-      function triggerQrFileInput() { document.getElementById('qr-file-input').click(); }
+      function triggerQrFileInput() { 
+        const fileInput = document.getElementById('qr-file-input');
+        if (fileInput) fileInput.click(); 
+      }
+      
       function scanQrFile(e) {
+        if (typeof Html5Qrcode === 'undefined') {
+          showToast("Pustaka QR Reader belum siap.", "error");
+          return;
+        }
         if(e.target.files[0]) {
           new Html5Qrcode("qr-reader").scanFile(e.target.files[0], true).then(res => {
-            document.getElementById('auth-main-key').value = res;
+            const keyInput = document.getElementById('auth-main-key');
+            if (keyInput) keyInput.value = res;
             showToast("Kode berhasil diekstrak!");
           }).catch(() => {
             showToast("Gagal mendeteksi kode QR dalam gambar.", "error");
@@ -1076,11 +1072,10 @@
       }
 
       // ==========================================
-      // 6. MODUL PORTAL DATA (DAPODIK UTAMA)
+      // 6. PORTAL DATA & LINKS LOGIC
       // ==========================================
       function saveLinks() { secureSave(CONFIG.STORAGE_PREFIX + 'links', linksData); }
       
-      // Render daftar tautan (Dikunci persis 2 kolom saja di semua layar lebar / monitor besar)
       function renderDynamicLinks() {
         const wrapper = document.getElementById('dynamic-links-wrapper');
         if (!wrapper) return;
@@ -1121,7 +1116,6 @@
             const sec = document.createElement('div');
             sec.innerHTML = `<h3 class="text-xs font-black tracking-wider uppercase text-slate-400 mb-4 flex items-center gap-2"><i class="fa-solid ${catMap[cat].icon} ${catMap[cat].color}"></i> ${catMap[cat].title}</h3>`;
             
-            // Grid dikunci tepat 2 kolom saja untuk semua layar lebar (sm:grid-cols-2)
             const grid = document.createElement('div');
             grid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-4';
             
@@ -1156,12 +1150,14 @@
         activeCategory = cat;
         const p2Fa = document.getElementById('panel-2fa-main-auth');
         const pLinks = document.getElementById('panel-links-main-wrapper');
-        if (cat === '2fa_auth') {
-          p2Fa.classList.remove('hidden');
-          pLinks.classList.add('hidden');
-        } else {
-          p2Fa.classList.add('hidden');
-          pLinks.classList.remove('hidden');
+        if (p2Fa && pLinks) {
+          if (cat === '2fa_auth') {
+            p2Fa.classList.remove('hidden');
+            pLinks.classList.add('hidden');
+          } else {
+            p2Fa.classList.add('hidden');
+            pLinks.classList.remove('hidden');
+          }
         }
         
         document.querySelectorAll('.category-tab').forEach(t => {
@@ -1187,17 +1183,18 @@
 
       function openAddLinkModal() {
         const m = document.getElementById('add-link-modal');
-        m.classList.remove('opacity-0','pointer-events-none');
-        m.children[0].classList.replace('scale-95','scale-100');
+        if (m) {
+          m.classList.remove('opacity-0','pointer-events-none');
+          m.children[0].classList.replace('scale-95','scale-100');
+        }
       }
 
-      // ==========================================
-      // 7. MODUL ASISTEN (AGENDA & MEMO MANAGER)
-      // ==========================================
       function closeAddLinkModal() {
         const m = document.getElementById('add-link-modal');
-        m.classList.add('opacity-0','pointer-events-none');
-        m.children[0].classList.replace('scale-100','scale-95');
+        if (m) {
+          m.classList.add('opacity-0','pointer-events-none');
+          m.children[0].classList.replace('scale-100','scale-95');
+        }
       }
 
       function saveCustomLinkLocal() {
@@ -1235,6 +1232,9 @@
         }, 'fa-arrows-rotate');
       }
 
+      // ==========================================
+      // 7. ASISTEN (AGENDA & MEMO) LOGIC
+      // ==========================================
       function saveAgenda() { secureSave(CONFIG.STORAGE_PREFIX + 'agendas', agendaData); }
       
       function renderAgenda() {
@@ -1262,15 +1262,18 @@
 
       function openAddAgendaModal() {
         const m = document.getElementById('add-agenda-modal');
-        m.classList.remove('opacity-0','pointer-events-none');
-        m.children[0].classList.replace('scale-95','scale-100');
+        if (m) {
+          m.classList.remove('opacity-0','pointer-events-none');
+          m.children[0].classList.replace('scale-95','scale-100');
+        }
       }
 
-      // Tutup Modal Agenda
       function closeAddAgendaModal() {
         const m = document.getElementById('add-agenda-modal');
-        m.classList.add('opacity-0','pointer-events-none');
-        m.children[0].classList.replace('scale-100','scale-95');
+        if (m) {
+          m.classList.add('opacity-0','pointer-events-none');
+          m.children[0].classList.replace('scale-100','scale-95');
+        }
       }
 
       function addAgendaItem() {
@@ -1310,13 +1313,14 @@
         if(btn && p) btn.onclick = () => toggleTaskDone(p.id);
       }
 
-      // Kalender Real-time
       function initCalendar() {
         const names = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
         const y = currentDateObj.getFullYear();
         const m = currentDateObj.getMonth();
-        document.getElementById('calendar-month-year').textContent = `${names[m]} ${y}`;
+        const headerTitle = document.getElementById('calendar-month-year');
+        if (headerTitle) headerTitle.textContent = `${names[m]} ${y}`;
         const c = document.getElementById('calendar-days-grid');
+        if (!c) return;
         c.innerHTML = '';
         const fd = new Date(y, m, 1).getDay();
         const td = new Date(y, m+1, 0).getDate();
@@ -1331,7 +1335,6 @@
       function prevMonth() { currentDateObj.setMonth(currentDateObj.getMonth()-1); initCalendar(); }
       function nextMonth() { currentDateObj.setMonth(currentDateObj.getMonth()+1); initCalendar(); }
 
-      // Memo Cepat (Buku Saku)
       function renderQuickNotes() {
         const c = document.getElementById('quick-notes-list');
         if(!c) return;
@@ -1362,7 +1365,6 @@
         }
       }
 
-      // Alat WA & Sandi
       function populateWaSelect() {
         const s = document.getElementById('wa-template-select');
         if(s) {
@@ -1376,31 +1378,39 @@
         if(t) copyText(t.text.replace(/{nama}/g, document.getElementById('wa-recipient-name').value || "Bapak/Ibu"));
       }
 
-      // Navigasi & UI Tab Switcher
       function switchAsistenTab(t) {
         ['agenda', 'kalender', 'alat'].forEach(id => {
-          document.getElementById(`btn-tab-${id}`).className = id === t ? "flex-1 py-2 px-2 rounded-xl text-[11px] font-extrabold bg-white dark:bg-slate-800 text-blue-600 shadow-sm" : "flex-1 py-2 px-2 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-800";
-          document.getElementById(`panel-tab-${id}`).classList.toggle('hidden', id !== t);
+          const btn = document.getElementById(`btn-tab-${id}`);
+          const panel = document.getElementById(`panel-tab-${id}`);
+          if (btn) btn.className = id === t ? "flex-1 py-2 px-2 rounded-xl text-[11px] font-extrabold bg-white dark:bg-slate-800 text-blue-600 shadow-sm" : "flex-1 py-2 px-2 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-800";
+          if (panel) panel.classList.toggle('hidden', id !== t);
         });
       }
 
+      // Integrasi Tabs Asisten Internal (Sub-Tabs)
       function switchSubTab(t) {
         ['tugas', 'memo'].forEach(id => {
-          document.getElementById(`btn-sub-${id}`).className = id === t ? "flex-1 py-1.5 text-[10px] font-black bg-white dark:bg-slate-800 text-blue-600 shadow-xs rounded-lg" : "flex-1 py-1.5 text-[10px] font-bold text-slate-500 rounded-lg";
-          document.getElementById(`sub-panel-${id}`).classList.toggle('hidden', id !== t);
+          const btn = document.getElementById(`btn-sub-${id}`);
+          const panel = document.getElementById(`sub-panel-${id}`);
+          if (btn) btn.className = id === t ? "flex-1 py-1.5 text-[10px] font-black bg-white dark:bg-slate-800 text-blue-600 shadow-xs rounded-lg" : "flex-1 py-1.5 text-[10px] font-bold text-slate-500 rounded-lg";
+          if (panel) panel.classList.toggle('hidden', id !== t);
         });
       }
 
       function openAddMemoModal() {
         const m = document.getElementById('add-memo-modal');
-        m.classList.remove('opacity-0','pointer-events-none');
-        m.children[0].classList.replace('scale-95','scale-100');
+        if (m) {
+          m.classList.remove('opacity-0','pointer-events-none');
+          m.children[0].classList.replace('scale-95','scale-100');
+        }
       }
 
       function closeAddMemoModal() {
         const m = document.getElementById('add-memo-modal');
-        m.classList.add('opacity-0','pointer-events-none');
-        m.children[0].classList.replace('scale-100','scale-95');
+        if (m) {
+          m.classList.add('opacity-0','pointer-events-none');
+          m.children[0].classList.replace('scale-100','scale-95');
+        }
       }
 
       function sendBroadcastWhatsApp() {
@@ -1414,22 +1424,30 @@
         for(let i=0; i<12; i++) {
           pass += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-        document.getElementById('generated-password-input').value = pass;
+        const pwInput = document.getElementById('generated-password-input');
+        if (pwInput) pwInput.value = pass;
       }
 
       function copyGeneratedPassword() {
-        copyText(document.getElementById('generated-password-input').value, "Sandi disalin!");
+        const pwInput = document.getElementById('generated-password-input');
+        if (pwInput) copyText(pwInput.value, "Sandi disalin!");
       }
 
       function openTemplatesModal() {
-        document.getElementById('templates-modal').classList.remove('opacity-0','pointer-events-none');
-        document.getElementById('templates-modal').children[0].classList.replace('scale-95','scale-100');
-        renderTemplatesList();
+        const m = document.getElementById('templates-modal');
+        if (m) {
+          m.classList.remove('opacity-0','pointer-events-none');
+          m.children[0].classList.replace('scale-95','scale-100');
+          renderTemplatesList();
+        }
       }
 
       function closeTemplatesModal() {
-        document.getElementById('templates-modal').classList.add('opacity-0','pointer-events-none');
-        document.getElementById('templates-modal').children[0].classList.replace('scale-100','scale-95');
+        const m = document.getElementById('templates-modal');
+        if (m) {
+          m.classList.add('opacity-0','pointer-events-none');
+          m.children[0].classList.replace('scale-100','scale-95');
+        }
       }
 
       function renderTemplatesList() {
@@ -1452,16 +1470,24 @@
       }
 
       function showAddTemplateForm() {
-        document.getElementById('templates-list-view').classList.add('hidden');
-        document.getElementById('template-form-view').classList.remove('hidden');
+        const lv = document.getElementById('templates-list-view');
+        const fv = document.getElementById('template-form-view');
+        if (lv && fv) {
+          lv.classList.add('hidden');
+          fv.classList.remove('hidden');
+        }
         document.getElementById('template-edit-id').value = '';
         document.getElementById('template-name-input').value = '';
         document.getElementById('template-text-input').value = '';
       }
 
       function hideTemplateForm() {
-        document.getElementById('templates-list-view').classList.remove('hidden');
-        document.getElementById('template-form-view').classList.add('hidden');
+        const lv = document.getElementById('templates-list-view');
+        const fv = document.getElementById('template-form-view');
+        if (lv && fv) {
+          lv.classList.remove('hidden');
+          fv.classList.add('hidden');
+        }
       }
 
       function saveTemplate() {
@@ -1503,7 +1529,7 @@
       }
 
       // ==========================================
-      // 8. DEPLOYMENT & PORTABILITY PWA WIDGET
+      // 8. PWA INSTALLATION SYSTEM & TIMER
       // ==========================================
       function downloadPwaFile(fileType) {
         let content = "", filename = "", mimeType = "";
@@ -1582,7 +1608,10 @@
         showToast("Cadangan berhasil diekspor!");
       }
 
-      function triggerImportData() { document.getElementById('import-file-input').click(); }
+      function triggerImportData() { 
+        const importInput = document.getElementById('import-file-input');
+        if (importInput) importInput.click(); 
+      }
       
       function importBackupData(e) { 
         if(e.target.files[0]) { 
@@ -1636,10 +1665,12 @@
       }
 
       // ==========================================
-      // 9. EVENT INISIALISASI UTAMA (onload)
+      // 9. WINDOW ONLOAD INITIALIZATION
       // ==========================================
       window.onload = () => {
         applyConfigToDOM();
+        
+        // Membaca Data Terenkripsi Lokal
         linksData = secureRead(CONFIG.STORAGE_PREFIX + 'links') || [...defaultSeedLinks];
         agendaData = secureRead(CONFIG.STORAGE_PREFIX + 'agendas') || [
           { id: "ag-1", text: "Koordinasi pemutakhiran data rombel kelas 7, 8, dan 9.", done: false, createdAt: Date.now() },
@@ -1651,6 +1682,7 @@
         ];
         waTemplates = secureRead(CONFIG.STORAGE_PREFIX + 'wa-templates') || [...defaultWaTemplates];
         
+        // Memicu Render Visual Pertama Kali
         renderAll();
         initCalendar();
         populateWaSelect();
@@ -1660,7 +1692,13 @@
         registerMainServiceWorker();
         updateOnlineStatus(navigator.onLine);
 
-        // Inisialisasi Detektor Aktivitas Tunggal
+        // Pengikat Event Listener Tombol Modal Konfirmasi Kustom
+        const cancelBtn = document.getElementById('btn-confirm-cancel');
+        const okBtn = document.getElementById('btn-confirm-ok');
+        if(cancelBtn) cancelBtn.onclick = () => closeCustomConfirm(false);
+        if(okBtn) okBtn.onclick = () => closeCustomConfirm(true);
+
+        // Inisialisasi Detektor Aktivitas Tunggal (Sistem Auto-Lock)
         ['mousemove', 'keypress', 'click', 'scroll', 'touchstart'].forEach(e => {
           document.addEventListener(e, resetIdleTimer);
         });
