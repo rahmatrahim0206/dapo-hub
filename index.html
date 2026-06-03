@@ -84,7 +84,7 @@
           </div>
           <div>
             <h1 class="text-sm sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-              DAPO-HUB <span class="bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold">Pro v2.0</span>
+              DAPO-HUB <span class="bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold">Pro v2.2</span>
             </h1>
             <p id="view-school-header" class="text-[9px] sm:text-xs text-slate-500 dark:text-slate-400">Memuat nama sekolah...</p>
           </div>
@@ -202,14 +202,14 @@
                 </header>
 
                 <!-- CONTAINER GRID TOKEN OTP -->
-                <div id="main-authenticator-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div id="main-authenticator-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <!-- JS Rendered -->
                 </div>
 
                 <!-- CATATAN KAKI KEAMANAN -->
-                <footer class="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 font-medium">
+                <footer class="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex flex-col sm:flex-row items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 font-medium gap-2">
                   <span class="flex items-center gap-1"><i class="fa-solid fa-lock text-emerald-500"></i> Seluruh data 2FA dienkripsi secara lokal di browser Anda.</span>
-                  <span class="font-mono text-[9px]">Sistem TOTP RFC 6238</span>
+                  <span class="font-mono text-[9px]">Sistem TOTP RFC 6238 / G-Auth Migration</span>
                 </footer>
               </div>
 
@@ -228,13 +228,14 @@
                       <h4 class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
                         <i class="fa-solid fa-camera text-emerald-500"></i> Pindai / Unggah QR Code
                       </h4>
+                      <p class="text-[9px] text-slate-400 leading-tight">Mendukung QR Code standar & QR Code ekspor massal Google Authenticator.</p>
                       <div class="grid grid-cols-2 gap-2">
                         <!-- Tombol Scan Kamera -->
                         <button id="btn-toggle-scan" onclick="toggleQrScanner()" class="px-3 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-xl transition flex items-center justify-center gap-1">
                           <i class="fa-solid fa-camera"></i> <span id="text-btn-scan">Scan Kamera</span>
                         </button>
                         <!-- Tombol Upload Berkas Foto QR -->
-                        <button onclick="triggerQrFileInput()" class="px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold rounded-xl transition flex items-center justify-center gap-1">
+                        <button onclick="triggerQrFileInput()" class="px-3 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold rounded-xl transition flex items-center justify-center gap-1" title="Unggah tangkapan layar kode QR Anda">
                           <i class="fa-solid fa-upload"></i> Unggah Foto
                         </button>
                       </div>
@@ -260,7 +261,7 @@
                       </div>
                       <div>
                         <label class="block text-[9px] font-black uppercase text-slate-400 mb-1">Kunci Rahasia (Secret Key)</label>
-                        <input type="text" id="auth-main-key" placeholder="Contoh: JBSWY3DPEHPK3PXP" class="w-full text-xs p-2.5 rounded-xl border dark:bg-slate-800 dark:text-white dark:border-slate-700 bg-white font-mono outline-none focus:ring-1 focus:ring-blue-500" />
+                        <input type="text" id="auth-main-key" placeholder="Contoh: JBSWY 3DPEH PK3P XP" class="w-full text-xs p-2.5 rounded-xl border dark:bg-slate-800 dark:text-white dark:border-slate-700 bg-white font-mono outline-none focus:ring-1 focus:ring-blue-500" />
                       </div>
                       <button onclick="save2FaKeyFromMain()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold rounded-xl transition shadow-md shadow-blue-500/10 flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-save"></i> Simpan Kunci Baru
@@ -280,8 +281,8 @@
 
           <div id="no-results-message" class="hidden text-center py-12 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl p-8">
             <div class="text-slate-300 text-5xl mb-4"><i class="fa-solid fa-circle-exclamation"></i></div>
-            <h4 class="text-lg font-bold dark:text-white">Tautan Tidak Ditemukan</h4>
-            <p class="text-sm text-slate-500 mt-1 max-w-sm mx-auto">Kami tidak dapat menemukan tautan yang sesuai dengan pencarian Anda.</p>
+            <h4 class="text-lg font-bold dark:text-white">Tautan / Akun Tidak Ditemukan</h4>
+            <p class="text-sm text-slate-500 mt-1 max-w-sm mx-auto">Kami tidak dapat menemukan tautan situs atau akun OTP yang sesuai dengan pencarian Anda.</p>
           </div>
         </section>
 
@@ -799,7 +800,8 @@
             return JSON.parse(rawValue);
           }
           if (typeof CryptoJS !== 'undefined') {
-            return JSON.parse(CryptoJS.AES.decrypt(rawValue, CONFIG.SECURE_PASS_KEY).toString(CryptoJS.enc.Utf8));
+            const dec = CryptoJS.AES.decrypt(rawValue, CONFIG.SECURE_PASS_KEY).toString(CryptoJS.enc.Utf8);
+            return dec ? JSON.parse(dec) : null;
           }
           return JSON.parse(rawValue);
         } catch (error) {
@@ -928,53 +930,236 @@
         }
       }
 
-      // ==========================================
-      // 5. MULTI-FACTOR AUTHENTICATOR LOGIC
-      // ==========================================
+      // ==========================================================
+      // 5. MULTI-FACTOR AUTHENTICATOR LOGIC & MIGRATION DECODER
+      // ==========================================================
+      
+      // Fungsi dekode Base32 yang telah ditingkatkan kekuatannya (Robust Base32)
       function base32toWordArray(b32) {
-        const c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"; let b = "";
-        for (let i = 0; i < b32.length; i++) { const v = c.indexOf(b32.charAt(i)); if (v !== -1) b += v.toString(2).padStart(5, '0'); }
-        const w = []; for (let i = 0; i < b.length; i += 32) w.push(parseInt(b.substr(i, 32).padEnd(32, '0'), 2) | 0);
-        return CryptoJS.lib.WordArray.create(w, Math.floor(b.length / 8));
+        const cleaned = b32.replace(/[\s\-=]+/g, "").toUpperCase();
+        if (!cleaned || cleaned.length === 0) return CryptoJS.lib.WordArray.create([]);
+        
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+        let binaryString = "";
+        
+        for (let i = 0; i < cleaned.length; i++) {
+          const val = alphabet.indexOf(cleaned.charAt(i));
+          if (val !== -1) {
+            binaryString += val.toString(2).padStart(5, '0');
+          }
+        }
+        
+        const words = [];
+        for (let i = 0; i < binaryString.length; i += 32) {
+          const chunk = binaryString.substr(i, 32).padEnd(32, '0');
+          words.push(parseInt(chunk, 2) | 0);
+        }
+        
+        return CryptoJS.lib.WordArray.create(words, Math.floor(binaryString.length / 8));
       }
 
-      function generateTOTP(s) {
+      // Fungsi pembuatan TOTP (RFC 6238)
+      function generateTOTP(secretKey) {
         try {
-          const key = base32toWordArray(s.replace(/\s+/g, "").toUpperCase()); if (!key || key.sigBytes === 0) return "000000";
-          const hmacHex = CryptoJS.enc.Hex.stringify(CryptoJS.HmacSHA1(CryptoJS.enc.Hex.parse(Math.floor(Date.now() / 30000).toString(16).padStart(16, '0')), key));
+          if (!secretKey) return "000000";
+          const key = base32toWordArray(secretKey);
+          if (!key || key.sigBytes === 0) return "INV-KEY";
+          
+          const epoch = Math.floor(Date.now() / 30000);
+          const timeHex = epoch.toString(16).padStart(16, '0');
+          
+          const hmac = CryptoJS.HmacSHA1(CryptoJS.enc.Hex.parse(timeHex), key);
+          const hmacHex = CryptoJS.enc.Hex.stringify(hmac);
+          
           const offset = parseInt(hmacHex.substring(hmacHex.length - 1), 16);
-          return String((parseInt(hmacHex.substring(offset * 2, offset * 2 + 8), 16) & 0x7fffffff) % 1000000).padStart(6, '0');
-        } catch (e) { return "000000"; }
+          const otpPart = hmacHex.substring(offset * 2, offset * 2 + 8);
+          const binaryToken = (parseInt(otpPart, 16) & 0x7fffffff) % 1000000;
+          return String(binaryToken).padStart(6, '0');
+        } catch (e) {
+          return "ERR-OTP";
+        }
       }
 
+      // --- DECODER PROTOBUF UNTUK GOOGLE AUTHENTICATOR MIGRATION ---
+      
+      function readVarint(bytes, offset) {
+        let value = 0;
+        let shift = 0;
+        while (true) {
+          if (offset >= bytes.length) throw new Error("Varint terpotong");
+          const b = bytes[offset++];
+          value |= (b & 0x7F) << shift;
+          if (!(b & 0x80)) break;
+          shift += 7;
+          if (shift > 35) throw new Error("Varint terlalu besar");
+        }
+        return { value, offset };
+      }
+
+      function parseProtobuf(bytes) {
+        let offset = 0;
+        const fields = [];
+        while (offset < bytes.length) {
+          try {
+            const keyResult = readVarint(bytes, offset);
+            const key = keyResult.value;
+            offset = keyResult.offset;
+            const wireType = key & 0x07;
+            const fieldNumber = key >>> 3;
+            
+            let value;
+            if (wireType === 0) { // Varint
+              const varintResult = readVarint(bytes, offset);
+              value = varintResult.value;
+              offset = varintResult.offset;
+            } else if (wireType === 2) { // Length-delimited
+              const lenResult = readVarint(bytes, offset);
+              const len = lenResult.value;
+              offset = lenResult.offset;
+              value = bytes.slice(offset, offset + len);
+              offset += len;
+            } else if (wireType === 1) { // 64-bit
+              value = bytes.slice(offset, offset + 8);
+              offset += 8;
+            } else if (wireType === 5) { // 32-bit
+              value = bytes.slice(offset, offset + 4);
+              offset += 4;
+            } else {
+              break; // Keluar jika ada tipe yang tidak dikenal untuk keamanan data
+            }
+            fields.push({ fieldNumber, wireType, value });
+          } catch (e) {
+            break;
+          }
+        }
+        return fields;
+      }
+
+      function uint8ArrayToBase32(arr) {
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+        let bits = 0;
+        let value = 0;
+        let output = "";
+        for (let i = 0; i < arr.length; i++) {
+          value = (value << 8) | arr[i];
+          bits += 8;
+          while (bits >= 5) {
+            output += alphabet[(value >>> (bits - 5)) & 31];
+            bits -= 5;
+          }
+        }
+        if (bits > 0) {
+          output += alphabet[(value << (5 - bits)) & 31];
+        }
+        return output;
+      }
+
+      function safeAtob(str) {
+        let padded = str.replace(/\s/g, '');
+        while (padded.length % 4 !== 0) {
+          padded += '=';
+        }
+        return atob(padded);
+      }
+
+      function parseGoogleMigrationUri(uri) {
+        try {
+          const urlObj = new URL(uri);
+          const dataParam = urlObj.searchParams.get("data");
+          if (!dataParam) return null;
+          
+          const binaryString = safeAtob(dataParam);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          
+          const fields = parseProtobuf(bytes);
+          const accounts = [];
+          
+          // Parameter OTP bertipe repeated parameters (field number 1)
+          const otpParamsFields = fields.filter(f => f.fieldNumber === 1 && f.wireType === 2);
+          
+          for (const field of otpParamsFields) {
+            const subFields = parseProtobuf(field.value);
+            let secretBytes = null;
+            let name = "";
+            let issuer = "";
+            
+            for (const sf of subFields) {
+              if (sf.fieldNumber === 1 && sf.wireType === 2) {
+                secretBytes = sf.value;
+              } else if (sf.fieldNumber === 2 && sf.wireType === 2) {
+                name = new TextDecoder().decode(sf.value);
+              } else if (sf.fieldNumber === 3 && sf.wireType === 2) {
+                issuer = new TextDecoder().decode(sf.value);
+              }
+            }
+            
+            if (secretBytes && secretBytes.length > 0) {
+              const base32Secret = uint8ArrayToBase32(secretBytes);
+              accounts.push({
+                label: issuer || name || "Akun Google",
+                user: name || "-",
+                key: base32Secret
+              });
+            }
+          }
+          return accounts;
+        } catch (e) {
+          console.error("Kesalahan parsing data migrasi:", e);
+          return null;
+        }
+      }
+
+      // Render daftar OTP Aktif secara responsif
       function renderAuthenticatorKeys() {
-        const c = document.getElementById('main-authenticator-list'); if (!c) return;
-        c.innerHTML = ''; const q = document.getElementById('search-input').value.toLowerCase().trim();
-        const fil = authenticatorKeys.filter(k => k.label.toLowerCase().includes(q) || k.user.toLowerCase().includes(q));
-        if (fil.length === 0) {
-          c.innerHTML = `<div class="col-span-1 sm:col-span-2 p-8 text-center text-slate-400 italic">Belum ada akun TOTP tersimpan.</div>`;
+        const container = document.getElementById('main-authenticator-list');
+        if (!container) return;
+        
+        const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+        const filteredKeys = authenticatorKeys.filter(k => 
+          k.label.toLowerCase().includes(searchQuery) || 
+          k.user.toLowerCase().includes(searchQuery)
+        );
+        
+        // Perbarui badge jumlah 2FA Hub secara dinamis
+        const badge2Fa = document.getElementById('badge-2fa_auth');
+        if (badge2Fa) badge2Fa.textContent = authenticatorKeys.length;
+
+        // Tampilkan pesan jika tidak ditemukan hasil
+        if (filteredKeys.length === 0) {
+          if (searchQuery.length > 0) {
+            container.innerHTML = `<div class="col-span-1 md:col-span-2 p-8 text-center text-slate-400 italic">Akun OTP dengan kata kunci "${searchQuery}" tidak ditemukan.</div>`;
+          } else {
+            container.innerHTML = `<div class="col-span-1 md:col-span-2 p-8 text-center text-slate-400 italic">Belum ada akun TOTP tersimpan. Mulai scan QR atau tambah manual.</div>`;
+          }
           return;
         }
-        fil.forEach(k => {
-          const d = document.createElement('div');
-          d.className = 'p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl hover:shadow-md transition duration-200';
-          const tok = generateTOTP(k.key);
-          d.innerHTML = `
-            <div class="flex justify-between items-start mb-1.5">
-              <div class="truncate pr-4">
-                <h4 class="text-xs font-black truncate text-slate-900 dark:text-white">${k.label}</h4>
-                <p class="text-[10px] text-slate-400 dark:text-slate-500">${k.user}</p>
+
+        let htmlContent = "";
+        filteredKeys.forEach(k => {
+          const currentOtp = generateTOTP(k.key);
+          const formattedOtp = currentOtp.length === 6 ? `${currentOtp.substring(0,3)} ${currentOtp.substring(3,6)}` : currentOtp;
+          
+          htmlContent += `
+            <div class="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl hover:shadow-md transition duration-200">
+              <div class="flex justify-between items-start mb-2">
+                <div class="truncate pr-4 w-[85%]">
+                  <h4 class="text-xs font-black truncate text-slate-900 dark:text-white" title="${k.label}">${k.label}</h4>
+                  <p class="text-[10px] text-slate-400 dark:text-slate-500 truncate" title="${k.user}">${k.user}</p>
+                </div>
+                <button onclick="delete2FaKey('${k.id}')" class="text-slate-300 hover:text-rose-500 transition p-1" title="Hapus Kunci">
+                  <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
               </div>
-              <button onclick="delete2FaKey('${k.id}')" class="text-slate-300 hover:text-rose-500 transition" title="Hapus Kunci">
-                <i class="fa-solid fa-trash-can text-[10px]"></i>
-              </button>
-            </div>
-            <div onclick="copyText('${tok}', 'OTP disalin!')" class="bg-white dark:bg-slate-800 py-2.5 rounded-xl border border-slate-100 dark:border-slate-700 text-center cursor-pointer hover:border-blue-500 dark:hover:border-blue-500 active:scale-95 transition-all" title="Klik untuk menyalin OTP">
-              <span class="font-space font-black text-xl tracking-widest text-blue-600 dark:text-blue-400">${tok}</span>
+              <div onclick="copyText('${currentOtp}', 'Token OTP ${k.label} disalin!')" class="bg-white dark:bg-slate-800 py-3 rounded-xl border border-slate-100 dark:border-slate-700 text-center cursor-pointer hover:border-blue-500 dark:hover:border-blue-500 active:scale-95 transition-all group" title="Klik untuk menyalin token">
+                <span class="font-space font-black text-2xl tracking-wider text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">${formattedOtp}</span>
+              </div>
             </div>
           `;
-          c.appendChild(d);
         });
+        container.innerHTML = htmlContent;
       }
 
       function saveAuthenticatorKeys() {
@@ -984,40 +1169,83 @@
       }
 
       function save2FaKeyFromMain() {
-        const l = document.getElementById('auth-main-label').value;
-        const u = document.getElementById('auth-main-user').value;
-        const k = document.getElementById('auth-main-key').value.replace(/\s+/g, '').toUpperCase();
-        if(!l || !k) return showToast("Lengkapi form kunci manual!", "warning");
-        authenticatorKeys.push({ id: '2fa-' + Date.now(), label: l, user: u || '-', key: k });
+        const labelInput = document.getElementById('auth-main-label');
+        const userInput = document.getElementById('auth-main-user');
+        const keyInput = document.getElementById('auth-main-key');
+
+        const rawLabel = labelInput.value.trim();
+        const rawUser = userInput.value.trim();
+        const rawKey = keyInput.value.replace(/[\s\-=]+/g, '').toUpperCase();
+
+        if (!rawLabel || !rawKey) {
+          return showToast("Harap isi Nama Layanan & Kunci Rahasia!", "warning");
+        }
+
+        if (!/^[A-Z2-7]+$/.test(rawKey)) {
+          return showToast("Kunci Rahasia tidak valid! Base32 hanya boleh berisi huruf A-Z dan angka 2-7.", "error");
+        }
+
+        const newId = '2fa-' + Date.now();
+        authenticatorKeys.push({ 
+          id: newId, 
+          label: rawLabel, 
+          user: rawUser || '-', 
+          key: rawKey 
+        });
+
         saveAuthenticatorKeys();
         renderAuthenticatorKeys();
-        showToast("Kunci OTP berhasil didaftarkan!");
-        document.getElementById('auth-main-label').value = '';
-        document.getElementById('auth-main-user').value = '';
-        document.getElementById('auth-main-key').value = '';
+        showToast(`Kunci OTP ${rawLabel} berhasil ditambahkan!`);
+        
+        labelInput.value = '';
+        userInput.value = '';
+        keyInput.value = '';
       }
 
       function delete2FaKey(id) {
-        showCustomConfirm("Hapus Kunci OTP?", "Akun OTP Anda akan dihapus secara permanen.", () => {
+        const keyObj = authenticatorKeys.find(k => k.id === id);
+        const nameLabel = keyObj ? keyObj.label : "Kunci OTP";
+        
+        showCustomConfirm("Hapus Kunci OTP?", `Akun OTP "${nameLabel}" Anda akan dihapus secara permanen.`, () => {
           authenticatorKeys = authenticatorKeys.filter(k => k.id !== id);
           saveAuthenticatorKeys();
           renderAuthenticatorKeys();
-          showToast("Kunci OTP berhasil dihapus.");
+          showToast(`Kunci OTP "${nameLabel}" telah dihapus.`);
         }, 'fa-trash-can');
       }
 
+      // Mesin TOTP Engine Real-time diperbaiki agar update timer responsif & tepat waktu
       function startTotpEngine() {
         if (totpIntervalId) clearInterval(totpIntervalId);
-        totpIntervalId = setInterval(() => {
-          const sec = 30 - (Math.round(Date.now() / 1000) % 30);
-          const tt = document.getElementById('otp-timer-text'); const pb = document.getElementById('otp-progress-bar');
-          if (tt) tt.textContent = sec;
-          if (pb) { pb.style.width = `${(sec / 30) * 100}%`; pb.className = sec < 5 ? "h-full bg-rose-500 rounded-full transition-all" : "h-full bg-blue-600 rounded-full transition-all"; }
-          if (sec === 30 || sec === 29) renderAuthenticatorKeys();
-        }, 1000);
+        
+        function updateTick() {
+          const now = Date.now();
+          const secondsLeft = 30 - (Math.round(now / 1000) % 30);
+          
+          const tt = document.getElementById('otp-timer-text'); 
+          const pb = document.getElementById('otp-progress-bar');
+          
+          if (tt) tt.textContent = secondsLeft;
+          if (pb) { 
+            const percentage = (secondsLeft / 30) * 100;
+            pb.style.width = `${percentage}%`; 
+            if (secondsLeft < 6) {
+              pb.className = "h-full bg-rose-500 rounded-full transition-all duration-300";
+            } else {
+              pb.className = "h-full bg-blue-600 rounded-full transition-all duration-300";
+            }
+          }
+          
+          if (secondsLeft === 30 || secondsLeft === 29 || document.getElementById('main-authenticator-list').children.length === 0) {
+            renderAuthenticatorKeys();
+          }
+        }
+        
+        updateTick();
+        totpIntervalId = setInterval(updateTick, 1000);
       }
 
-      // Pengurai URL otpauth:// untuk ekstraksi data otomatis
+      // Pengurai URL otpauth:// untuk ekstraksi data otomatis dari QR Code standar
       function parseOtpAuthUri(uri) {
         try {
           if (!uri.startsWith('otpauth://')) return null;
@@ -1042,7 +1270,6 @@
 
           return { label: issuer, user: user || '-', key: secret };
         } catch (e) {
-          // Fallback regex parsing jika URL parser standar gagal
           const secretMatch = uri.match(/[?&]secret=([^&]+)/i);
           if (secretMatch) {
             const secret = secretMatch[1];
@@ -1056,6 +1283,38 @@
 
       // Handler untuk memproses dan menggenerasi hasil scan / unggahan QR Code secara instan
       function handleQrCodeResult(res) {
+        // Deteksi Format Ekspor Massal Google Authenticator (PENTING!)
+        if (res.startsWith('otpauth-migration://')) {
+          const accounts = parseGoogleMigrationUri(res);
+          if (accounts && accounts.length > 0) {
+            let successCount = 0;
+            accounts.forEach(acc => {
+              const newId = '2fa-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+              // Cek duplikasi kunci agar tidak masuk dua kali
+              if (!authenticatorKeys.some(k => k.key === acc.key)) {
+                authenticatorKeys.push({
+                  id: newId,
+                  label: acc.label,
+                  user: acc.user,
+                  key: acc.key
+                });
+                successCount++;
+              }
+            });
+            if (successCount > 0) {
+              saveAuthenticatorKeys();
+              renderAuthenticatorKeys();
+              showToast(`Berhasil mengimpor ${successCount} akun dari Google Authenticator!`, 'success');
+            } else {
+              showToast("Semua akun migrasi ini sudah terdaftar sebelumnya di portal.", "warning");
+            }
+          } else {
+            showToast("Gagal menguraikan berkas migrasi Google Authenticator.", "error");
+          }
+          return;
+        }
+
+        // Jalur Ekstraksi QR Code Standar
         const parsed = parseOtpAuthUri(res);
         if (parsed) {
           document.getElementById('auth-main-label').value = parsed.label;
@@ -1063,16 +1322,19 @@
           document.getElementById('auth-main-key').value = parsed.key;
           save2FaKeyFromMain();
         } else {
-          // Jika hanya berisi string kunci rahasia murni
-          const cleaned = res.replace(/\s+/g, '').toUpperCase();
-          document.getElementById('auth-main-key').value = cleaned;
-          showToast("Kunci rahasia berhasil dimuat. Lengkapi data layanan lalu simpan.", "warning");
+          const cleaned = res.replace(/[\s\-=]+/g, '').toUpperCase();
+          if (/^[A-Z2-7]+$/.test(cleaned)) {
+            document.getElementById('auth-main-key').value = cleaned;
+            showToast("Kunci rahasia berhasil dimuat. Lengkapi nama layanan lalu simpan.", "warning");
+          } else {
+            showToast("Hasil scan QR Code tidak mengandung format OTP valid.", "error");
+          }
         }
       }
 
       function toggleQrScanner() {
         if (typeof Html5Qrcode === 'undefined') {
-          showToast("Pustaka QR Scanner belum siap dimuat hulu.", "error");
+          showToast("Pustaka QR Scanner belum siap dimuat.", "error");
           return;
         }
         const wrp = document.getElementById('qr-reader-wrapper');
@@ -1081,7 +1343,9 @@
           if (wrp) wrp.classList.add('hidden');
           if (bText) bText.textContent = "Scan Kamera";
           isScanning = false;
-          if (qrScannerObj) qrScannerObj.stop();
+          if (qrScannerObj) {
+            qrScannerObj.stop().catch(() => {});
+          }
         } else {
           if (wrp) wrp.classList.remove('hidden');
           if (bText) bText.textContent = "Hentikan";
@@ -1089,7 +1353,7 @@
           qrScannerObj = new Html5Qrcode("qr-reader");
           qrScannerObj.start(
             { facingMode: "environment" },
-            { fps: 10, qrbox: 200 },
+            { fps: 15, qrbox: 220 },
             res => {
               toggleQrScanner();
               handleQrCodeResult(res);
@@ -1097,7 +1361,7 @@
             () => {}
           ).catch(() => {
             toggleQrScanner();
-            showToast("Gagal mengakses kamera instrumen.", "error");
+            showToast("Gagal mengakses kamera internal perangkat.", "error");
           });
         }
       }
@@ -1116,7 +1380,7 @@
           new Html5Qrcode("qr-reader").scanFile(e.target.files[0], true).then(res => {
             handleQrCodeResult(res);
           }).catch(() => {
-            showToast("Gagal mendeteksi kode QR dalam gambar.", "error");
+            showToast("Gagal mendeteksi kode QR dalam gambar tersebut.", "error");
           });
         }
       }
@@ -1135,7 +1399,7 @@
           'utama': { title: 'Portal Utama & Dapodik', icon: 'fa-folder-open', color: 'text-blue-500' },
           'verval': { title: 'Verval & Validasi', icon: 'fa-shield-halved', color: 'text-emerald-500' },
           'keuangan': { title: 'BOS & Keuangan', icon: 'fa-wallet', color: 'text-amber-500' },
-          'guru': { title: 'Layanan PTK', icon: 'fa-chalkboard-user', color: 'text-indigo-500' },
+          'guru': { title: 'Layanan GTK', icon: 'fa-chalkboard-user', color: 'text-indigo-500' },
           'kepegawaian': { title: 'Layanan ASN', icon: 'fa-id-card-clip', color: 'text-sky-500' },
           'ujian': { title: 'Asesmen (ANBK)', icon: 'fa-laptop-code', color: 'text-rose-500' },
           'daerah': { title: 'Dinas & Daerah', icon: 'fa-city', color: 'text-purple-500' }
@@ -1204,6 +1468,7 @@
           if (cat === '2fa_auth') {
             p2Fa.classList.remove('hidden');
             pLinks.classList.add('hidden');
+            renderAuthenticatorKeys();
           } else {
             p2Fa.classList.add('hidden');
             pLinks.classList.remove('hidden');
@@ -1248,17 +1513,17 @@
       }
 
       function saveCustomLinkLocal() {
-        const t = document.getElementById('new-link-title').value;
-        const u = document.getElementById('new-link-url').value;
-        const d = document.getElementById('new-link-desc').value;
+        const t = document.getElementById('new-link-title').value.trim();
+        const u = document.getElementById('new-link-url').value.trim();
+        const d = document.getElementById('new-link-desc').value.trim();
         const c = document.getElementById('new-link-category').value;
         const i = document.getElementById('new-link-icon').value;
-        if(!t || !u || !d) return showToast("Harap lengkapi formulir!", "warning");
+        if(!t || !u || !d) return showToast("Harap lengkapi semua formulir!", "warning");
         linksData.push({ id: `link-${Date.now()}`, title: t, url: u, desc: d, category: c, icon: i, system: false, createdAt: Date.now() });
         saveLinks();
         renderDynamicLinks();
         closeAddLinkModal();
-        showToast("Tautan berhasil ditambahkan!");
+        showToast("Tautan kustom berhasil ditambahkan!");
         document.getElementById('new-link-title').value = '';
         document.getElementById('new-link-url').value = '';
         document.getElementById('new-link-desc').value = '';
@@ -1327,14 +1592,14 @@
       }
 
       function addAgendaItem() {
-        const t = document.getElementById('agenda-input-text').value;
+        const t = document.getElementById('agenda-input-text').value.trim();
         if(t) {
           agendaData.push({ id: 'ag-'+Date.now(), text: t, done: false, createdAt: Date.now() });
           saveAgenda();
           renderAgenda();
           closeAddAgendaModal();
           document.getElementById('agenda-input-text').value = '';
-          showToast("Tugas berhasil ditambahkan!");
+          showToast("Tugas baru berhasil disimpan!");
         }
       }
 
@@ -1347,6 +1612,7 @@
         }
       }
 
+      // Hapus agenda
       function deleteAgendaItem(id) {
         agendaData = agendaData.filter(x=>x.id!==id);
         saveAgenda();
@@ -1382,7 +1648,6 @@
         }
       }
 
-      // Navigasi bulan kalender harian
       function prevMonth() { currentDateObj.setMonth(currentDateObj.getMonth()-1); initCalendar(); }
       function nextMonth() { currentDateObj.setMonth(currentDateObj.getMonth()+1); initCalendar(); }
 
@@ -1403,8 +1668,8 @@
       }
 
       function addQuickNote() {
-        const t = document.getElementById('note-title-input').value;
-        const b = document.getElementById('note-body-input').value;
+        const t = document.getElementById('note-title-input').value.trim();
+        const b = document.getElementById('note-body-input').value.trim();
         if(t && b) {
           notesData.push({ id: 'n-'+Date.now(), title: t, body: b });
           secureSave(CONFIG.STORAGE_PREFIX + 'notes', notesData);
@@ -1438,7 +1703,6 @@
         });
       }
 
-      // Integrasi Tabs Asisten Internal (Sub-Tabs)
       function switchSubTab(t) {
         ['tugas', 'memo'].forEach(id => {
           const btn = document.getElementById(`btn-sub-${id}`);
@@ -1501,6 +1765,7 @@
         }
       }
 
+      // Render daftar template siaran WhatsApp
       function renderTemplatesList() {
         const container = document.getElementById('templates-list-container');
         if(!container) return;
@@ -1543,8 +1808,8 @@
 
       function saveTemplate() {
         const id = document.getElementById('template-edit-id').value;
-        const name = document.getElementById('template-name-input').value;
-        const text = document.getElementById('template-text-input').value;
+        const name = document.getElementById('template-name-input').value.trim();
+        const text = document.getElementById('template-text-input').value.trim();
         if(!name || !text) return showToast("Lengkapi nama & pesan template!", "warning");
         if(id) {
           const idx = waTemplates.findIndex(t => t.id === id);
@@ -1556,7 +1821,7 @@
         populateWaSelect();
         renderTemplatesList();
         hideTemplateForm();
-        showToast("Template berhasil disimpan!");
+        showToast("Template pesan berhasil disimpan!");
       }
 
       function editTemplate(id) {
@@ -1598,7 +1863,7 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showToast(`Berkas ${filename} berhasil diunduh! Taruh berkas ini di satu tingkat root bersama index.html Anda.`, "success");
+        showToast(`Berkas ${filename} berhasil diunduh! Taruh berkas ini di root folder bersama index.html Anda.`, "success");
       }
 
       function registerMainServiceWorker() {
@@ -1656,7 +1921,7 @@
         document.body.appendChild(a);
         a.click();
         a.remove();
-        showToast("Cadangan berhasil diekspor!");
+        showToast("Cadangan sistem berhasil diekspor!");
       }
 
       function triggerImportData() { 
