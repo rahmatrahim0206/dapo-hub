@@ -98,7 +98,7 @@
           <button onclick="toggleTheme()" class="p-2 sm:p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all duration-200" title="Ganti Mode Tampilan" aria-label="Ganti Tema">
             <i id="theme-icon" class="fa-solid fa-moon"></i>
           </button>
-          <button onclick="triggerEmergencyReset()" class="p-2 sm:p-2.5 rounded-xl bg-rose-100 dark:bg-rose-950/40 hover:bg-rose-200 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 transition-all duration-200" title="Penghancuran Data Sesi Darurat (Emergency Wipe)" aria-label="Reset Darurat">
+          <button onclick="triggerEmergencyReset()" class="p-2 sm:p-2.5 rounded-xl bg-rose-100 dark:bg-rose-950/40 hover:bg-rose-200 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 transition-all duration-200" title="Reset Darurat Sesi dan Penghapusan Data Permanen" aria-label="Reset Darurat">
             <i class="fa-solid fa-power-off"></i>
           </button>
         </div>
@@ -1058,11 +1058,11 @@
       }
 
       function safeAtob(str) {
-        let padded = str.replace(/\s/g, '');
-        while (padded.length % 4 !== 0) {
-          padded += '=';
+        let cleaned = str.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
+        while (cleaned.length % 4 !== 0) {
+          cleaned += '=';
         }
-        return atob(padded);
+        return atob(cleaned);
       }
 
       function parseGoogleMigrationUri(uri) {
@@ -1139,8 +1139,7 @@
           return;
         }
 
-        // Hitung sisa waktu siklus TOTP saat ini (0 hingga 30 detik)
-        const secondsLeft = 30 - (Math.round(Date.now() / 1000) % 30);
+        const secondsLeft = 30 - (Math.floor(Date.now() / 1000) % 30);
 
         let htmlContent = "";
         filteredKeys.forEach(k => {
@@ -1238,7 +1237,7 @@
         
         function updateTick() {
           const now = Date.now();
-          const secondsLeft = 30 - (Math.round(now / 1000) % 30);
+          const secondsLeft = 30 - (Math.floor(now / 1000) % 30);
           
           const tt = document.getElementById('otp-timer-text'); 
           const pb = document.getElementById('otp-progress-bar');
@@ -1562,8 +1561,8 @@
 
       function triggerEmergencyReset() {
         showCustomConfirm(
-          "Hancurkan Semua Sesi & Data?", 
-          "PERINGATAN DARURAT: Tindakan ini akan menghapus seluruh data sensitif Anda secara permanen dari peramban ini, termasuk kunci 2FA, catatan memo, agenda kerja, serta tautan kustom. Sistem akan segera dimuat ulang ke pengaturan awal.", 
+          "Lakukan Reset Sesi Darurat?", 
+          "PERINGATAN DARURAT: Tindakan ini akan menghapus seluruh data sensitif Anda secara permanen dari browser ini, termasuk kunci keamanan 2FA, catatan penting, agenda kerja, serta tautan kustom yang telah ditambahkan. Sistem akan dimuat ulang ke pengaturan awal.", 
           () => {
             const keysToRemove = ['links', 'agendas', 'notes', 'auth-keys', 'wa-templates'];
             keysToRemove.forEach(key => {
